@@ -2,17 +2,22 @@ package com.example.myapplication.ui
 
 import android.graphics.drawable.shapes.RoundRectShape
 import android.util.Log
+import android.widget.RadioButton
+import android.widget.RadioGroup
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.RadioButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
@@ -30,32 +35,58 @@ import retrofit2.Response
 @Composable
 fun Companies() {
     val total = remember { mutableStateOf<Int?>(null) }
-    val companies = remember {
-        val companies = mutableStateListOf<Company>()
-        companyService.getCompanies(pageNum = 1).enqueue(object : Callback<Wrapper<Page<Company>>> {
-            override fun onResponse(
-                call: Call<Wrapper<Page<Company>>>, response: Response<Wrapper<Page<Company>>>
-            ) {
-                val body = response.body()?.data!!
-                total.value = body.total
-                companies.addAll((body.list!!))
-            }
+    val companies = remember { mutableStateListOf<Company>() }
 
-            override fun onFailure(call: Call<Wrapper<Page<Company>>>, t: Throwable) {
-                t.printStackTrace()
-                Log.e("TAG", "onFailure: ", t)
-            }
-        })
-        companies
+    val radioOptions = mapOf(
+        "最新注册" to "date_created",
+        "问题数量" to "count_of_issue",
+        "员工数量" to "count_of_employees",
+    )
+    val selectedOption = remember { mutableStateOf("最新注册") }
+    val onOptionSelected: (String) -> Unit = { key ->
+        selectedOption.value = key
+        Log.e("TAG", "onOptionSelected: ")
+
+        companyService.getCompanies(pageNum = 1, orderBy = radioOptions[key]!!)
+            .enqueue(object : Callback<Wrapper<Page<Company>>> {
+                override fun onResponse(
+                    call: Call<Wrapper<Page<Company>>>, response: Response<Wrapper<Page<Company>>>
+                ) {
+                    val body = response.body()?.data!!
+                    total.value = body.total
+                    companies.clear()
+                    companies.addAll((body.list!!))
+                }
+
+                override fun onFailure(call: Call<Wrapper<Page<Company>>>, t: Throwable) {
+                    t.printStackTrace()
+                }
+            })
     }
-
+    onOptionSelected(selectedOption.value)
     Column {
-        if (total.value != null)
-            Text(
-                "总数 ${total.value}",
-                Modifier.padding(horizontal = 16.dp, vertical = 16.dp),
-                fontSize = 22.sp,
-            )
+        Column {
+            radioOptions.keys.forEach { key ->
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { onOptionSelected(key) }) {
+                    RadioButton(
+                        selected = key == selectedOption.value,
+                        onClick = { onOptionSelected(key) })
+                    Text(key, fontSize = 16.sp)
+                }
+            }
+
+            if (total.value != null)
+                Text(
+                    "总数 ${total.value}",
+                    Modifier.padding(horizontal = 16.dp, vertical = 16.dp),
+                    fontSize = 14.sp,
+                    style = TextStyle(color = Color.Gray),
+                )
+        }
         LazyColumn(
             modifier = Modifier.padding(horizontal = 8.dp)
         ) {

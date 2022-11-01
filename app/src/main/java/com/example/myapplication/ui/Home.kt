@@ -1,16 +1,13 @@
 package com.example.myapplication.ui
 
-import android.graphics.drawable.shapes.RoundRectShape
 import android.util.Log
-import android.widget.RadioButton
-import android.widget.RadioGroup
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Button
 import androidx.compose.material.RadioButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -19,11 +16,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import com.example.myapplication.companyService
 import com.example.myapplication.network.entity.Company
 import com.example.myapplication.network.response.Page
@@ -64,21 +63,42 @@ fun Companies() {
             })
     }
     onOptionSelected(selectedOption.value)
-    Column {
-        Column {
-            radioOptions.keys.forEach { key ->
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable { onOptionSelected(key) }) {
-                    RadioButton(
-                        selected = key == selectedOption.value,
-                        onClick = { onOptionSelected(key) })
-                    Text(key, fontSize = 16.sp)
+    val dismiss = remember { mutableStateOf(true) }
+    if (!dismiss.value)
+        Dialog(onDismissRequest = { dismiss.value = true }, content = {
+            Column(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(Color.White)
+                    .padding(8.dp)
+            ) {
+                radioOptions.keys.forEach { key ->
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                onOptionSelected(key)
+                                dismiss.value = true
+                            }) {
+                        RadioButton(
+                            selected = key == selectedOption.value,
+                            onClick = {
+                                onOptionSelected(key)
+                                dismiss.value = true
+                            })
+                        Text(key, fontSize = 16.sp)
+                    }
                 }
             }
-
+        })
+    Column {
+        Column {
+            Button(onClick = {
+                dismiss.value = false
+            }) {
+                Text("排序")
+            }
             if (total.value != null)
                 Text(
                     "总数 ${total.value}",
@@ -87,6 +107,7 @@ fun Companies() {
                     style = TextStyle(color = Color.Gray),
                 )
         }
+
         LazyColumn(
             modifier = Modifier.padding(horizontal = 8.dp)
         ) {

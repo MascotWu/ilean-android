@@ -12,7 +12,8 @@ interface CompanyService {
     fun getCompanies(
         @Query("pageNum") pageNum: Int,
         @Query("pageSize") pageSize: Int = 0,
-        @Query("name") name: String = "",
+        @Query("name") name: String? = null,
+        @Query("countOfIssue") countOfIssue: Int? = 20,
         @Query("deleted") deleted: Boolean = false,
     ): Call<Wrapper<Page<Company>>>
 }

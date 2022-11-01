@@ -38,6 +38,7 @@ fun Companies() {
             }
 
             override fun onFailure(call: Call<Wrapper<Page<Company>>>, t: Throwable) {
+                t.printStackTrace()
                 Log.e("TAG", "onFailure: ", t)
             }
         })
@@ -55,7 +56,7 @@ fun Companies() {
             modifier = Modifier.padding(horizontal = 8.dp)
         ) {
             items(items = companies, itemContent = { company: Company ->
-                Column(modifier = Modifier.padding(horizontal = 8.dp)) {
+                Column(modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)) {
                     Row(modifier = Modifier.fillMaxWidth()) {
                         Text(
                             company.name ?: "",
@@ -74,9 +75,9 @@ fun Companies() {
                     }
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
+                        horizontalArrangement = Arrangement.Start
                     ) {
-                        Row(modifier = Modifier.padding(vertical = 4.dp)) {
+                        Row(modifier = Modifier.padding(top = 4.dp, end = 12.dp)) {
                             Text(
                                 "问题 ",
                                 style = TextStyle(color = Color.Gray),
@@ -88,13 +89,26 @@ fun Companies() {
                                 fontSize = 14.sp
                             )
                         }
+                        Row(modifier = Modifier.padding(top = 4.dp, end = 12.dp)) {
+                            Text(
+                                "员工 ",
+                                style = TextStyle(color = Color.Gray),
+                                fontSize = 14.sp
+                            )
+                            Text(
+                                "${company.countOfEmployees}",
+                                style = TextStyle(color = Color.Blue),
+                                fontSize = 14.sp
+                            )
+                        }
                     }
-
-                    Text(
-                        "注册于 " + company.dateCreated,
-                        style = TextStyle(color = Color.Gray),
-                        fontSize = 14.sp
-                    )
+                    Row(modifier = Modifier.padding(top = 4.dp)) {
+                        Text(
+                            "注册于 " + company.dateCreated,
+                            style = TextStyle(color = Color.Gray),
+                            fontSize = 14.sp
+                        )
+                    }
                 }
             })
         }

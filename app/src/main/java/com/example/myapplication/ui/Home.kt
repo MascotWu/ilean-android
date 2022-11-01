@@ -1,9 +1,13 @@
 package com.example.myapplication.ui
 
+import android.graphics.drawable.shapes.RoundRectShape
 import android.util.Log
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
@@ -66,11 +70,11 @@ fun Companies() {
                             fontSize = 18.sp
                         )
                         Text(
-                            text = "#${company.companyId}",
+                            text = " #${company.companyId}",
                             Modifier.padding(top = 12.dp),
                             maxLines = 1,
                             fontSize = 18.sp,
-                            style = TextStyle(color = Color.LightGray)
+                            style = TextStyle(color = Color.Gray)
                         )
                     }
                     Row(

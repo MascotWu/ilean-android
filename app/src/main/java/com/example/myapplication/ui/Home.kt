@@ -44,8 +44,6 @@ fun Companies() {
     val selectedOption = remember { mutableStateOf("最新注册") }
     val onOptionSelected: (String) -> Unit = { key ->
         selectedOption.value = key
-        Log.e("TAG", "onOptionSelected: ")
-
         companyService.getCompanies(pageNum = 1, orderBy = radioOptions[key]!!)
             .enqueue(object : Callback<Wrapper<Page<Company>>> {
                 override fun onResponse(
@@ -92,13 +90,9 @@ fun Companies() {
                 }
             }
         })
-    Column {
+    Column(modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)) {
         Column {
-            Button(onClick = {
-                dismiss.value = false
-            }) {
-                Text("排序")
-            }
+            Button(onClick = { dismiss.value = false }) { Text(selectedOption.value) }
             if (total.value != null)
                 Text(
                     "总数 ${total.value}",
@@ -108,9 +102,7 @@ fun Companies() {
                 )
         }
 
-        LazyColumn(
-            modifier = Modifier.padding(horizontal = 8.dp)
-        ) {
+        LazyColumn {
             items(items = companies, itemContent = { company: Company ->
                 Column(modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)) {
                     Row(modifier = Modifier.fillMaxWidth()) {

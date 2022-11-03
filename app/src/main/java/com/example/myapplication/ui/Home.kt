@@ -89,8 +89,8 @@ fun Companies() {
                 }
             }
         })
-    Column(modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)) {
-        Column {
+    Column(modifier = Modifier.padding(vertical = 2.dp)) {
+        Column(modifier = Modifier.padding(horizontal = 8.dp)) {
             TextButton(onClick = { dismiss.value = false }) { Text(selectedOption.value) }
             if (total.value != null)
                 Text(
@@ -103,18 +103,20 @@ fun Companies() {
 
         LazyColumn {
             items(items = companies, itemContent = { company: Company ->
-                Column(modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)) {
+                Column(
+                    modifier = Modifier
+                        .clickable { }
+                        .padding(horizontal = 16.dp, vertical = 6.dp)
+                ) {
                     Row(modifier = Modifier.fillMaxWidth()) {
                         Text(
                             company.name ?: "",
-                            Modifier.padding(top = 12.dp),
                             maxLines = 2,
                             overflow = TextOverflow.Ellipsis,
-                            fontSize = 18.sp
+                            fontSize = 18.sp,
                         )
                         Text(
                             text = " #${company.companyId}",
-                            Modifier.padding(top = 12.dp),
                             maxLines = 1,
                             fontSize = 18.sp,
                             style = TextStyle(color = Color.Gray)

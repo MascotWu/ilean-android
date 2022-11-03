@@ -31,7 +31,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 @Composable
-fun Companies() {
+fun Companies(navigate: (Int) -> Unit) {
     val total = remember { mutableStateOf<Int?>(null) }
     val companies = remember { mutableStateListOf<Company>() }
 
@@ -105,7 +105,7 @@ fun Companies() {
             items(items = companies, itemContent = { company: Company ->
                 Column(
                     modifier = Modifier
-                        .clickable { }
+                        .clickable { navigate(company.companyId!!) }
                         .padding(horizontal = 16.dp, vertical = 6.dp)
                 ) {
                     Row(modifier = Modifier.fillMaxWidth()) {

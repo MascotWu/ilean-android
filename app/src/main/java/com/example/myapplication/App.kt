@@ -9,6 +9,7 @@ import androidx.navigation.navArgument
 import com.example.myapplication.network.CompanyService
 import com.example.myapplication.network.LoginService
 import com.example.myapplication.ui.Companies
+import com.example.myapplication.ui.Company
 import com.example.myapplication.ui.Login
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -35,7 +36,13 @@ fun App() {
             }
         }
         composable("overview") {
-            Companies()
+            Companies { companyId -> navController.navigate("company/$companyId") }
+        }
+        composable("company/{companyId}", arguments = listOf(
+            navArgument("companyId") { type = NavType.IntType }
+        )) { backStackEntry ->
+            val arguments = backStackEntry.arguments
+            Company(companyId = arguments?.getInt("companyId")!!) { navController.popBackStack() }
         }
         composable("profile/{userId}") {
             Profile { navController.navigate("friends/jia/43") }

@@ -5,6 +5,7 @@ import com.example.myapplication.network.response.Page
 import com.example.myapplication.network.response.Wrapper
 import retrofit2.Call
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface CompanyService {
@@ -17,4 +18,7 @@ interface CompanyService {
         @Query("deleted") deleted: Boolean = false,
         @Query("orderBy") orderBy: String = "date_created",
     ): Call<Wrapper<Page<Company>>>
+
+    @GET("company/getCompany/{companyId}")
+    fun getCompanies(@Path("companyId") companyId: Int): Call<Wrapper<Company>>
 }

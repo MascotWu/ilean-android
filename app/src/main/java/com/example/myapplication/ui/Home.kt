@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -29,6 +30,9 @@ import com.example.myapplication.network.response.Wrapper
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.text.SimpleDateFormat
+import java.util.*
+import java.util.concurrent.TimeUnit
 
 @Composable
 fun Companies(navigate: (Int) -> Unit) {
@@ -43,21 +47,29 @@ fun Companies(navigate: (Int) -> Unit) {
     val selectedOption = remember { mutableStateOf("最新注册") }
     val onOptionSelected: (String) -> Unit = { key ->
         selectedOption.value = key
-        companyService.getCompanies(pageNum = 1, orderBy = radioOptions[key]!!)
-            .enqueue(object : Callback<Wrapper<Page<Company>>> {
-                override fun onResponse(
-                    call: Call<Wrapper<Page<Company>>>, response: Response<Wrapper<Page<Company>>>
-                ) {
-                    val body = response.body()?.data!!
-                    total.value = body.total
-                    companies.clear()
-                    companies.addAll((body.list!!))
-                }
+        val today: Calendar = Calendar.getInstance(Locale.CHINA)
+        today.add(Calendar.MONTH, -1)
+        companyService.getCompanies(
+            pageNum = 1,
+            orderBy = radioOptions[key]!!,
+            lastUsedTime = SimpleDateFormat(
+                "yyyy-MM-dd",
+                Locale.CHINA
+            ).format(Date(today.timeInMillis))
+        ).enqueue(object : Callback<Wrapper<Page<Company>>> {
+            override fun onResponse(
+                call: Call<Wrapper<Page<Company>>>, response: Response<Wrapper<Page<Company>>>
+            ) {
+                val body = response.body()?.data!!
+                total.value = body.total
+                companies.clear()
+                companies.addAll((body.list!!))
+            }
 
-                override fun onFailure(call: Call<Wrapper<Page<Company>>>, t: Throwable) {
-                    t.printStackTrace()
-                }
-            })
+            override fun onFailure(call: Call<Wrapper<Page<Company>>>, t: Throwable) {
+                t.printStackTrace()
+            }
+        })
     }
     onOptionSelected(selectedOption.value)
     val dismiss = remember { mutableStateOf(true) }
@@ -151,12 +163,34 @@ fun Companies(navigate: (Int) -> Unit) {
                             )
                         }
                     }
-                    Row(modifier = Modifier.padding(top = 4.dp)) {
+                    Column(modifier = Modifier.padding(top = 4.dp)) {
                         Text(
                             "注册于 " + company.dateCreated,
                             style = TextStyle(color = Color.Gray),
                             fontSize = 14.sp
                         )
+                        if (company.lastUsedTime != null) {
+                            val lastUsedTime = SimpleDateFormat(
+                                "yyyy-MM-dd", Locale.CHINA
+                            ).parse(company.lastUsedTime!!)
+                            val numberOfDaysInactive = TimeUnit.DAYS.convert(
+                                Date().time - lastUsedTime!!.time,
+                                TimeUnit.MILLISECONDS
+                            )
+                            if (numberOfDaysInactive < 15) {
+                                Text(
+                                    "${numberOfDaysInactive}天前使用过",
+                                    style = TextStyle(color = Color.Gray),
+                                    fontSize = 14.sp
+                                )
+                            } else {
+                                Text(
+                                    "超过${numberOfDaysInactive}天未使用",
+                                    style = TextStyle(color = Color.Red, fontWeight = FontWeight.W600),
+                                    fontSize = 14.sp
+                                )
+                            }
+                        }
                     }
                 }
             })

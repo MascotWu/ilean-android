@@ -17,6 +17,7 @@ interface CompanyService {
         @Query("name") name: String? = null,
         @Query("countOfIssue") countOfIssue: Int? = 20,
         @Query("deleted") deleted: Boolean = false,
+        @Query("lastUsedTime") lastUsedTime: String? = null,
         @Query("orderBy") orderBy: String = "date_created",
     ): Call<Wrapper<Page<Company>>>
 

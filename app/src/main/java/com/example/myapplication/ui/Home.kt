@@ -95,7 +95,7 @@ fun Companies() {
             if (total.value != null)
                 Text(
                     "总数 ${total.value}",
-                    Modifier.padding(horizontal = 16.dp, vertical = 16.dp),
+                    Modifier.padding(start = 8.dp, bottom = 4.dp, end = 8.dp, top = 2.dp),
                     fontSize = 14.sp,
                     style = TextStyle(color = Color.Gray),
                 )

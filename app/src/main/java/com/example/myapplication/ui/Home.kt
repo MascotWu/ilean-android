@@ -1,15 +1,14 @@
 package com.example.myapplication.ui
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
 import androidx.compose.material.RadioButton
 import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -92,7 +91,7 @@ fun Companies() {
         })
     Column(modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)) {
         Column {
-            Button(onClick = { dismiss.value = false }) { Text(selectedOption.value) }
+            TextButton(onClick = { dismiss.value = false }) { Text(selectedOption.value) }
             if (total.value != null)
                 Text(
                     "总数 ${total.value}",

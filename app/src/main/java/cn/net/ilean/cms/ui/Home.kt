@@ -48,7 +48,7 @@ fun Companies(navigate: (Int) -> Unit) {
     val onOptionSelected: (String) -> Unit = { key ->
         selectedOption.value = key
         val today: Calendar = Calendar.getInstance(Locale.CHINA)
-        today.add(Calendar.MONTH, -1)
+        today.add(Calendar.MONTH, -3)
         companyService.getCompanies(
             pageNum = 1,
             orderBy = radioOptions[key]!!,
@@ -177,7 +177,7 @@ fun Companies(navigate: (Int) -> Unit) {
                                 Date().time - lastUsedTime!!.time,
                                 TimeUnit.MILLISECONDS
                             )
-                            if (numberOfDaysInactive < 15) {
+                            if (numberOfDaysInactive < 30) {
                                 Text(
                                     "${numberOfDaysInactive}天前使用过",
                                     style = TextStyle(color = Color.Gray),

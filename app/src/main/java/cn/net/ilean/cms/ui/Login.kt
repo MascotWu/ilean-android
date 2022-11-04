@@ -1,6 +1,5 @@
-package com.example.myapplication.ui
+package cn.net.ilean.cms.ui
 
-import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.Button
@@ -11,10 +10,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.example.myapplication.loginService
-import com.example.myapplication.network.LoginRequest
-import com.example.myapplication.network.LoginResponse
-import com.example.myapplication.network.LoginService
+import cn.net.ilean.cms.loginService
+import cn.net.ilean.cms.network.LoginRequest
+import cn.net.ilean.cms.network.LoginResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

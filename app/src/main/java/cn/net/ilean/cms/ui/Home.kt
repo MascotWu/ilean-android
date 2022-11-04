@@ -1,4 +1,4 @@
-package com.example.myapplication.ui
+package cn.net.ilean.cms.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -23,10 +23,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import com.example.myapplication.companyService
-import com.example.myapplication.network.entity.Company
-import com.example.myapplication.network.response.Page
-import com.example.myapplication.network.response.Wrapper
+import cn.net.ilean.cms.companyService
+import cn.net.ilean.cms.network.entity.Company
+import cn.net.ilean.cms.network.response.Page
+import cn.net.ilean.cms.network.response.Wrapper
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

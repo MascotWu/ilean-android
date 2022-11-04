@@ -1,12 +1,10 @@
-package com.example.myapplication.ui
+package cn.net.ilean.cms.ui
 
 import android.util.Log
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.outlined.Phone
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -17,10 +15,10 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.myapplication.companyService
-import com.example.myapplication.network.entity.Company
-import com.example.myapplication.network.response.IssueHistory
-import com.example.myapplication.network.response.Wrapper
+import cn.net.ilean.cms.companyService
+import cn.net.ilean.cms.network.entity.Company
+import cn.net.ilean.cms.network.response.IssueHistory
+import cn.net.ilean.cms.network.response.Wrapper
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

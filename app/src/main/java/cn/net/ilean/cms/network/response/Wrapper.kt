@@ -1,4 +1,4 @@
-package com.example.myapplication.network.response
+package cn.net.ilean.cms.network.response
 
 class Wrapper<T>(
     var code: String? = null,

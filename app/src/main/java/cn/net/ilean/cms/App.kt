@@ -1,4 +1,4 @@
-package com.example.myapplication
+package cn.net.ilean.cms
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavType
@@ -6,11 +6,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.myapplication.network.CompanyService
-import com.example.myapplication.network.LoginService
-import com.example.myapplication.ui.Companies
-import com.example.myapplication.ui.Company
-import com.example.myapplication.ui.Login
+import cn.net.ilean.cms.network.CompanyService
+import cn.net.ilean.cms.network.LoginService
+import cn.net.ilean.cms.ui.Companies
+import cn.net.ilean.cms.ui.Company
+import cn.net.ilean.cms.ui.Login
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory

@@ -1,4 +1,4 @@
-package com.example.myapplication.ui.theme
+package cn.net.ilean.cms.ui.theme
 
 import androidx.compose.material.Typography
 import androidx.compose.ui.text.TextStyle

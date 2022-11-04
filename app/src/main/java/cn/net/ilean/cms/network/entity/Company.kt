@@ -1,6 +1,6 @@
-package com.example.myapplication.network.entity
+package cn.net.ilean.cms.network.entity
 
-import com.example.myapplication.network.response.User
+import cn.net.ilean.cms.network.response.User
 
 class Company(
     var companyId: Int? = null,

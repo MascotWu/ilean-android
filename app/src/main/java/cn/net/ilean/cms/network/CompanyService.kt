@@ -1,9 +1,9 @@
-package com.example.myapplication.network
+package cn.net.ilean.cms.network
 
-import com.example.myapplication.network.entity.Company
-import com.example.myapplication.network.response.IssueHistory
-import com.example.myapplication.network.response.Page
-import com.example.myapplication.network.response.Wrapper
+import cn.net.ilean.cms.network.entity.Company
+import cn.net.ilean.cms.network.response.IssueHistory
+import cn.net.ilean.cms.network.response.Page
+import cn.net.ilean.cms.network.response.Wrapper
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path

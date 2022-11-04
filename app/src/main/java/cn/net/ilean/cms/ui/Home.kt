@@ -186,7 +186,10 @@ fun Companies(navigate: (Int) -> Unit) {
                             } else {
                                 Text(
                                     "超过${numberOfDaysInactive}天未使用",
-                                    style = TextStyle(color = Color.Red, fontWeight = FontWeight.W600),
+                                    style = TextStyle(
+                                        color = Color.Red,
+                                        fontWeight = FontWeight.W600
+                                    ),
                                     fontSize = 14.sp
                                 )
                             }

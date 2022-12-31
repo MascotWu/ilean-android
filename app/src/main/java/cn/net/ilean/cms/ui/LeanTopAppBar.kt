@@ -9,15 +9,11 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.Composable
 
 @Composable
-fun LeanTopAppBar(onNavigationIcon: () -> Unit) {
+fun LeanTopAppBar(onNavigationIcon: @Composable () -> Unit) {
     TopAppBar(
         title = {
             Text("iLean")
         },
-        navigationIcon = {
-            IconButton(onClick = onNavigationIcon) {
-                Icon(Icons.Filled.Menu, contentDescription = null)
-            }
-        },
+        navigationIcon = onNavigationIcon,
     )
 }

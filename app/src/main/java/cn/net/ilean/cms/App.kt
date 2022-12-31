@@ -37,61 +37,45 @@ fun App() {
     userService = retrofit.create(UserService::class.java)
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute =
-        navBackStackEntry?.destination?.route ?: COMPANIES_ROUTE
     val navigationActions = LeanNavigationActions(navController)
-    val scaffoldState = rememberScaffoldState()
-    val scope = rememberCoroutineScope()
-    Scaffold(
-        scaffoldState = scaffoldState,
-        topBar = { LeanTopAppBar(onNavigationIcon = { scope.launch { scaffoldState.drawerState.open() } }) },
-        drawerContent = {
-            LeanDrawer(currentRoute, onDrawerItemSelected = { item ->
-                when (item) {
-                    COMPANIES_ROUTE -> navigationActions.navigateToCompanies()
-                    EMPLOYEES_ROUTE -> navigationActions.navigateToEmployees()
-                }
-                scope.launch { scaffoldState.drawerState.close() }
-            })
-        },
-    ) {
-        NavHost(navController = navController, startDestination = COMPANIES_ROUTE) {
-            composable("login") {
-                Login {
-                    navController.navigate("overview")
-                }
-            }
-            composable(COMPANIES_ROUTE) {
-                Companies(navigationActions) { companyId -> navController.navigate("company/$companyId") }
-            }
-            composable(EMPLOYEES_ROUTE) {
-                Employees(navigationActions)
-            }
-            composable(
-                "company/{companyId}",
-                arguments = listOf(navArgument("companyId") {
-                    type = NavType.IntType
-                })
-            ) { backStackEntry ->
-                val arguments = backStackEntry.arguments
-                Company(companyId = arguments?.getInt("companyId")!!) { navController.popBackStack() }
-            }
-            composable("profile/{userId}") {
-                Profile { navController.navigate("friends/jia/43") }
-            }
-            composable(
-                "friends/{name}/{id}", arguments = listOf(
-                    navArgument("name") { type = NavType.StringType },
-                    navArgument("id") { type = NavType.IntType },
-                )
-            ) { backStackEntry ->
-                val arguments = backStackEntry.arguments
-                val id = arguments?.getInt("id")
-                val name = arguments?.getString("name")
-                Friends(id, name)
+    NavHost(navController = navController, startDestination = COMPANIES_ROUTE) {
+        composable("login") {
+            Login {
+                navController.navigate("overview")
             }
         }
+        composable(COMPANIES_ROUTE) {
+            Companies(navigationActions) { companyId -> navController.navigate("company/$companyId") }
+        }
+        composable(EMPLOYEES_ROUTE) {
+            Employees(navigationActions)
+        }
+        composable(
+            "company/{companyId}",
+            arguments = listOf(navArgument("companyId") {
+                type = NavType.IntType
+            })
+        ) { backStackEntry ->
+            val arguments = backStackEntry.arguments
+            Company(
+                companyId = arguments?.getInt("companyId")!!,
+                navigationActions = navigationActions
+            ) { navController.popBackStack() }
+        }
+        composable("profile/{userId}") {
+            Profile { navController.navigate("friends/jia/43") }
+        }
+        composable(
+            "friends/{name}/{id}", arguments = listOf(
+                navArgument("name") { type = NavType.StringType },
+                navArgument("id") { type = NavType.IntType },
+            )
+        ) { backStackEntry ->
+            val arguments = backStackEntry.arguments
+            val id = arguments?.getInt("id")
+            val name = arguments?.getString("name")
+            Friends(id, name)
+        }
     }
-
 }
 

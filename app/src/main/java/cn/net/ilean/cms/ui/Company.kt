@@ -2,6 +2,8 @@ package cn.net.ilean.cms.ui
 
 import android.util.Log
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -64,7 +66,11 @@ fun Company(companyId: Int, navigate: () -> Unit) {
                 }
             })
     }, content = {
-        Column(Modifier.padding(16.dp)) {
+        Column(
+            Modifier
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState())
+        ) {
             Text(
                 company.value?.name ?: "",
                 style = TextStyle(fontSize = 24.sp),

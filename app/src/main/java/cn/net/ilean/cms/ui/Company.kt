@@ -54,94 +54,81 @@ fun Company(companyId: Int, navigate: () -> Unit) {
         }
 
     })
-    Scaffold(topBar = {
-        TopAppBar(
-            title = { Text(text = "企业详情") },
-            navigationIcon = {
-                IconButton(onClick = { navigate() }) {
-                    Icon(
-                        Icons.Default.ArrowBack,
-                        contentDescription = null
-                    )
-                }
-            })
-    }, content = {
-        Column(
-            Modifier
-                .padding(16.dp)
-                .verticalScroll(rememberScrollState())
+    Column(
+        Modifier
+            .padding(16.dp)
+            .verticalScroll(rememberScrollState())
+    ) {
+        Text(
+            company.value?.name ?: "",
+            style = TextStyle(fontSize = 24.sp),
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
+        Text(
+            "注册于 ${company.value?.dateCreated}",
+            style = TextStyle(color = Color.Gray, fontSize = 18.sp),
+            modifier = Modifier.padding(bottom = 4.dp)
+        )
+        val registrant = company.value?.registrant
+        Text(
+            registrant?.name ?: "",
+            style = TextStyle(fontSize = 20.sp),
+            modifier = Modifier.padding(top = 8.dp, bottom = 6.dp)
+        )
+        val phoneNumber = registrant?.phone
+        if (phoneNumber?.isNotEmpty() == true)
+            Row {
+                Icons.Outlined.Phone
+                Text(
+                    registrant.phone!!,
+                    style = TextStyle(color = Color.Blue, fontSize = 18.sp),
+                    modifier = Modifier.padding(bottom = 4.dp)
+                )
+            }
+        val lastLoginTime: String? = registrant?.lastLoginTime
+        if (lastLoginTime != null)
+            Text(
+                "上次登录时间 $lastLoginTime",
+                style = TextStyle(color = Color.Gray, fontSize = 18.sp)
+            )
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp, bottom = 4.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                company.value?.name ?: "",
-                style = TextStyle(fontSize = 24.sp),
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-            Text(
-                "注册于 ${company.value?.dateCreated}",
-                style = TextStyle(color = Color.Gray, fontSize = 18.sp),
-                modifier = Modifier.padding(bottom = 4.dp)
-            )
-            val registrant = company.value?.registrant
-            Text(
-                registrant?.name ?: "",
-                style = TextStyle(fontSize = 20.sp),
-                modifier = Modifier.padding(top = 8.dp, bottom = 6.dp)
-            )
-            val phoneNumber = registrant?.phone
-            if (phoneNumber?.isNotEmpty() == true)
-                Row {
-                    Icons.Outlined.Phone
-                    Text(
-                        registrant.phone!!,
-                        style = TextStyle(color = Color.Blue, fontSize = 18.sp),
-                        modifier = Modifier.padding(bottom = 4.dp)
-                    )
-                }
-            val lastLoginTime: String? = registrant?.lastLoginTime
-            if (lastLoginTime != null)
-                Text(
-                    "上次登录时间 $lastLoginTime",
-                    style = TextStyle(color = Color.Gray, fontSize = 18.sp)
+                "日期",
+                style = TextStyle(
+                    color = Color.DarkGray, fontSize = 18.sp, fontWeight = FontWeight.W600
                 )
-
+            )
+            Text(
+                "记录问题数量",
+                style = TextStyle(
+                    color = Color.DarkGray,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.W600
+                )
+            )
+        }
+        history.value.forEach { issueHistory ->
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 16.dp, bottom = 4.dp),
+                    .padding(vertical = 2.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    "日期",
-                    style = TextStyle(
-                        color = Color.DarkGray, fontSize = 18.sp, fontWeight = FontWeight.W600
-                    )
+                    issueHistory.date!!,
+                    style = TextStyle(color = Color.Gray, fontSize = 18.sp)
                 )
                 Text(
-                    "记录问题数量",
-                    style = TextStyle(
-                        color = Color.DarkGray,
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.W600
-                    )
+                    issueHistory.count.toString(),
+                    style = TextStyle(color = Color.Blue, fontSize = 18.sp)
                 )
             }
-            history.value.forEach { issueHistory ->
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 2.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(
-                        issueHistory.date!!,
-                        style = TextStyle(color = Color.Gray, fontSize = 18.sp)
-                    )
-                    Text(
-                        issueHistory.count.toString(),
-                        style = TextStyle(color = Color.Blue, fontSize = 18.sp)
-                    )
-                }
-            }
         }
-    })
+    }
 }

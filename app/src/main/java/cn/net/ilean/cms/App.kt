@@ -15,14 +15,15 @@ import cn.net.ilean.cms.LeanDestination.COMPANIES_ROUTE
 import cn.net.ilean.cms.LeanDestination.EMPLOYEES_ROUTE
 import cn.net.ilean.cms.network.CompanyService
 import cn.net.ilean.cms.network.LoginService
+import cn.net.ilean.cms.network.UserService
 import cn.net.ilean.cms.ui.*
-import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.launch
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 
 lateinit var companyService: CompanyService
+lateinit var userService: UserService
 lateinit var loginService: LoginService
 
 @Composable
@@ -33,6 +34,7 @@ fun App() {
 
     loginService = retrofit.create(LoginService::class.java)
     companyService = retrofit.create(CompanyService::class.java)
+    userService = retrofit.create(UserService::class.java)
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute =

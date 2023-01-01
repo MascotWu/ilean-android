@@ -3,6 +3,7 @@ package cn.net.ilean.cms.ui
 import android.util.Log
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -15,6 +16,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -87,6 +89,7 @@ fun Employees(navigationActions: LeanNavigationActions) {
                 item {
                     CircularProgressIndicator(
                         modifier = Modifier
+                            .padding(8.dp)
                             .fillMaxWidth()
                             .wrapContentWidth(Alignment.CenterHorizontally)
                     )
@@ -97,10 +100,7 @@ fun Employees(navigationActions: LeanNavigationActions) {
 }
 
 class Source : PagingSource<Int, String>() {
-    override fun getRefreshKey(state: PagingState<Int, String>): Int? {
-        Log.e("Source", "getRefreshKey: ")
-        return 2
-    }
+    override fun getRefreshKey(state: PagingState<Int, String>): Int? = null
 
     override suspend fun load(params: LoadParams<Int>): LoadResult.Page<Int, String> {
         Log.e("Source", "load: key: ${params.key}, loadSize: ${params.loadSize}")

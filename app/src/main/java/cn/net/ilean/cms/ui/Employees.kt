@@ -1,12 +1,11 @@
 package cn.net.ilean.cms.ui
 
 import android.util.Log
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
@@ -23,12 +22,16 @@ import androidx.navigation.compose.rememberNavController
 import androidx.paging.*
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
-import androidx.paging.compose.itemsIndexed
 import cn.net.ilean.cms.LeanDestination
 import cn.net.ilean.cms.LeanNavigationActions
+import cn.net.ilean.cms.network.response.User
 import cn.net.ilean.cms.userService
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun Employees(navigationActions: LeanNavigationActions) {
     val pager = remember {
@@ -39,7 +42,7 @@ fun Employees(navigationActions: LeanNavigationActions) {
                 enablePlaceholders = true,
             )
         ) {
-            Source()
+            UserSource()
         }
     }
     val lazyPagingItems = pager.flow.collectAsLazyPagingItems()
@@ -69,7 +72,7 @@ fun Employees(navigationActions: LeanNavigationActions) {
             })
         },
     ) {
-        LazyColumn {
+        LazyColumn(modifier = Modifier.padding(top = 8.dp)) {
             if (lazyPagingItems.loadState.refresh == LoadState.Loading) {
                 item {
                     Text(
@@ -82,7 +85,15 @@ fun Employees(navigationActions: LeanNavigationActions) {
             }
 
             items(lazyPagingItems) { item ->
-                Text("$item", fontSize = 20.sp, modifier = Modifier.fillMaxWidth())
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 12.dp, vertical = 8.dp)
+                ) {
+                    Text("${item?.name}", fontSize = 20.sp)
+                    if (!item?.phone.isNullOrBlank()) Text("${item?.phone}", fontSize = 18.sp)
+                    Text("上次登录 ${item?.lastLoginTime}", fontSize = 18.sp)
+                }
             }
 
             if (lazyPagingItems.loadState.append == LoadState.Loading) {
@@ -99,20 +110,18 @@ fun Employees(navigationActions: LeanNavigationActions) {
     }
 }
 
-class Source : PagingSource<Int, String>() {
-    override fun getRefreshKey(state: PagingState<Int, String>): Int? = null
+class UserSource : PagingSource<Int, User>() {
+    override fun getRefreshKey(state: PagingState<Int, User>): Int? = null
 
-    override suspend fun load(params: LoadParams<Int>): LoadResult.Page<Int, String> {
-        Log.e("Source", "load: key: ${params.key}, loadSize: ${params.loadSize}")
+    override suspend fun load(params: LoadParams<Int>): LoadResult.Page<Int, User> {
         val users = coroutineScope {
             withContext(Dispatchers.IO) {
                 userService.getEmployees(page = params.key ?: 1, pageSize = params.loadSize)
                     .execute().body()?.data
             }
         }
-        Log.e("Source", "list.size: ${users?.list!!.size}")
         return LoadResult.Page(
-            users.list!!.map { it.name ?: "Null" },
+            users!!.list!!,
             if (users.pageNum!! <= 1) null else users.pageNum?.minus(1),
             if (users.list!!.isNotEmpty()) users.pageNum?.plus(1) else null
         )

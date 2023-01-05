@@ -1,10 +1,12 @@
 package cn.net.ilean.cms
 
+import android.app.Application
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -17,6 +19,7 @@ import cn.net.ilean.cms.network.CompanyService
 import cn.net.ilean.cms.network.LoginService
 import cn.net.ilean.cms.network.UserService
 import cn.net.ilean.cms.ui.*
+import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.launch
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -25,6 +28,9 @@ import retrofit2.converter.scalars.ScalarsConverterFactory
 lateinit var companyService: CompanyService
 lateinit var userService: UserService
 lateinit var loginService: LoginService
+
+@HiltAndroidApp
+class LeanApplication : Application()
 
 @Composable
 fun App() {
@@ -48,7 +54,7 @@ fun App() {
             Companies(navigationActions) { companyId -> navController.navigate("company/$companyId") }
         }
         composable(EMPLOYEES_ROUTE) {
-            Employees(navigationActions)
+            Employees(navigationActions, hiltViewModel())
         }
         composable(
             "company/{companyId}",

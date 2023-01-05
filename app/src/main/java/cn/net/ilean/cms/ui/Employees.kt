@@ -1,6 +1,7 @@
 package cn.net.ilean.cms.ui
 
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -15,6 +16,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -24,16 +27,18 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import cn.net.ilean.cms.LeanDestination
 import cn.net.ilean.cms.LeanNavigationActions
+import cn.net.ilean.cms.network.UserService
 import cn.net.ilean.cms.network.response.User
 import cn.net.ilean.cms.userService
+import dagger.hilt.InstallIn
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun Employees(navigationActions: LeanNavigationActions) {
+fun Employees(navigationActions: LeanNavigationActions, mainViewModel: MainViewModel) {
     val pager = remember {
         Pager(
             PagingConfig(
@@ -42,7 +47,7 @@ fun Employees(navigationActions: LeanNavigationActions) {
                 enablePlaceholders = true,
             )
         ) {
-            UserSource()
+            mainViewModel.users
         }
     }
     val lazyPagingItems = pager.flow.collectAsLazyPagingItems()
@@ -107,23 +112,5 @@ fun Employees(navigationActions: LeanNavigationActions) {
                 }
             }
         }
-    }
-}
-
-class UserSource : PagingSource<Int, User>() {
-    override fun getRefreshKey(state: PagingState<Int, User>): Int? = null
-
-    override suspend fun load(params: LoadParams<Int>): LoadResult.Page<Int, User> {
-        val users = coroutineScope {
-            withContext(Dispatchers.IO) {
-                userService.getEmployees(page = params.key ?: 1, pageSize = params.loadSize)
-                    .execute().body()?.data
-            }
-        }
-        return LoadResult.Page(
-            users!!.list!!,
-            if (users.pageNum!! <= 1) null else users.pageNum?.minus(1),
-            if (users.list!!.isNotEmpty()) users.pageNum?.plus(1) else null
-        )
     }
 }

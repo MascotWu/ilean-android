@@ -11,5 +11,5 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     val usersRepository: UsersRepository
 ) : ViewModel() {
-    val users: PagingSource<Int, User> = usersRepository.users
+    fun users(orderBy: String): PagingSource<Int, User> = usersRepository.users(orderBy)
 }

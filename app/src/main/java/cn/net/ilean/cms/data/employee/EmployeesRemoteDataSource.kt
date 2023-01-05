@@ -12,16 +12,20 @@ import javax.inject.Singleton
 
 @Singleton
 class EmployeesRemoteDataSource @Inject constructor() {
-    val users = UserPagingSource()
+    fun users(orderBy: String) = UserPagingSource(orderBy)
 }
 
-class UserPagingSource : PagingSource<Int, User>() {
+class UserPagingSource(private val orderBy: String) : PagingSource<Int, User>() {
     override fun getRefreshKey(state: PagingState<Int, User>): Int? = null
 
     override suspend fun load(params: LoadParams<Int>): LoadResult.Page<Int, User> {
         val users = coroutineScope {
             withContext(Dispatchers.IO) {
-                userService.getEmployees(page = params.key ?: 1, pageSize = params.loadSize)
+                userService.getEmployees(
+                    page = params.key ?: 1,
+                    pageSize = params.loadSize,
+                    orderBy = orderBy
+                )
                     .execute().body()?.data
             }
         }

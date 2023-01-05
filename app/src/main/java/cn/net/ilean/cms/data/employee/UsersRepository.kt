@@ -5,7 +5,6 @@ import javax.inject.Inject
 class UsersRepository @Inject constructor(
     val employeesRemoteDataSource: EmployeesRemoteDataSource
 ) {
-
-    val users = employeesRemoteDataSource.users
+    fun users(orderBy: String) = employeesRemoteDataSource.users(orderBy)
 }
 

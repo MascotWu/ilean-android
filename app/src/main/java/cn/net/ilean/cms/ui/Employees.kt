@@ -10,10 +10,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -39,6 +36,7 @@ import javax.inject.Inject
 
 @Composable
 fun Employees(navigationActions: LeanNavigationActions, mainViewModel: MainViewModel) {
+    var orderBy by remember { mutableStateOf("last_login_time") }
     val pager = remember {
         Pager(
             PagingConfig(
@@ -47,7 +45,7 @@ fun Employees(navigationActions: LeanNavigationActions, mainViewModel: MainViewM
                 enablePlaceholders = true,
             )
         ) {
-            mainViewModel.users
+            mainViewModel.users(orderBy)
         }
     }
     val lazyPagingItems = pager.flow.collectAsLazyPagingItems()

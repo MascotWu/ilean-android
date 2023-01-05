@@ -12,5 +12,6 @@ interface UserService {
     fun getEmployees(
         @Query("page") page: Int = 1,
         @Query("pageSize") pageSize: Int = 20,
+        @Query("orderBy") orderBy:String = "last_login_time"
     ): Call<Wrapper<Page<User>>>
 }

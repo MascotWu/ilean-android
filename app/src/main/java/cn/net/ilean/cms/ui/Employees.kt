@@ -131,7 +131,7 @@ fun Employees(navigationActions: LeanNavigationActions, mainViewModel: MainViewM
                         Text("上次登录 ${item?.lastLoginTime}", fontSize = 18.sp)
                         Text("记录问题 ${item?.countOfIssueCreated}", fontSize = 18.sp)
                         Text("解决问题 ${item?.countOfIssueSolved}", fontSize = 18.sp)
-                        Text("注册时间 ${item?.registerTime}", fontSize = 18.sp)
+                        Text("注册时间 ${item?.registerTime ?: "(空)"}", fontSize = 18.sp)
                     }
                 }
 

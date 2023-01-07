@@ -1,8 +1,5 @@
 package cn.net.ilean.cms.ui
 
-import android.app.Dialog
-import android.util.Log
-import android.widget.RadioGroup
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -12,27 +9,19 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.paging.*
+import androidx.paging.LoadState
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import cn.net.ilean.cms.LeanDestination
 import cn.net.ilean.cms.LeanNavigationActions
-import cn.net.ilean.cms.network.UserService
-import cn.net.ilean.cms.network.response.User
-import cn.net.ilean.cms.userService
-import dagger.hilt.InstallIn
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 @Composable
 fun Employees(navigationActions: LeanNavigationActions, mainViewModel: MainViewModel) {

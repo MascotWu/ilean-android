@@ -8,10 +8,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBox
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,7 +17,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -29,55 +25,38 @@ import androidx.navigation.compose.rememberNavController
 import cn.net.ilean.cms.LeanDestination.COMPANIES_ROUTE
 import cn.net.ilean.cms.LeanDestination.EMPLOYEES_ROUTE
 import cn.net.ilean.cms.LeanNavigationActions
-import cn.net.ilean.cms.companyService
+import cn.net.ilean.cms.network.CompanyServiceImpl
 import cn.net.ilean.cms.network.entity.Company
-import cn.net.ilean.cms.network.response.Page
-import cn.net.ilean.cms.network.response.Wrapper
-import cn.net.ilean.cms.ui.theme.MyApplicationTheme
-import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.launch
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 
 @Composable
-fun Companies(navigationActions: LeanNavigationActions, navigate: (Int) -> Unit) {
-    val total = remember { mutableStateOf<Int?>(null) }
+fun Companies(
+    navigationActions: LeanNavigationActions,
+    mainViewModel: MainViewModel,
+    navigate: (Int) -> Unit
+) {
     val companies = remember { mutableStateListOf<Company>() }
-
     val radioOptions = mapOf(
         "最新注册" to "date_created",
         "问题数量" to "count_of_issue",
         "员工数量" to "count_of_employees",
     )
-    val selectedOption = remember { mutableStateOf("最新注册") }
-    val onOptionSelected: (String) -> Unit = { key ->
-        selectedOption.value = key
-        val today: Calendar = Calendar.getInstance(Locale.CHINA)
-        today.add(Calendar.MONTH, -3)
-        companyService.getCompanies(
-            pageNum = 1, orderBy = radioOptions[key]!!, lastUsedTime = SimpleDateFormat(
-                "yyyy-MM-dd", Locale.CHINA
-            ).format(Date(today.timeInMillis))
-        ).enqueue(object : Callback<Wrapper<Page<Company>>> {
-            override fun onResponse(
-                call: Call<Wrapper<Page<Company>>>, response: Response<Wrapper<Page<Company>>>
-            ) {
-                val body = response.body()?.data!!
-                total.value = body.total
-                companies.clear()
-                companies.addAll((body.list!!))
-            }
+    var selectedOption by remember { mutableStateOf("最新注册") }
 
-            override fun onFailure(call: Call<Wrapper<Page<Company>>>, t: Throwable) {
-                t.printStackTrace()
-            }
-        })
+    val companyPage by mainViewModel.getCompanies(radioOptions[selectedOption]!!)
+        .collectAsState(initial = null)
+    println("<top>.Companies")
+    val total = remember { mutableStateOf(companyPage?.total) }
+    if (companyPage != null) {
+        companies.clear()
+        companies.addAll((companyPage?.list!!))
     }
-    onOptionSelected(selectedOption.value)
+    val onOptionSelected: (String) -> Unit = { key ->
+        selectedOption = key
+    }
     val dismiss = remember { mutableStateOf(true) }
     if (!dismiss.value) Dialog(onDismissRequest = { dismiss.value = true }, content = {
         Column(
@@ -94,7 +73,7 @@ fun Companies(navigationActions: LeanNavigationActions, navigate: (Int) -> Unit)
                             onOptionSelected(key)
                             dismiss.value = true
                         }) {
-                    RadioButton(selected = key == selectedOption.value, onClick = {
+                    RadioButton(selected = key == selectedOption, onClick = {
                         onOptionSelected(key)
                         dismiss.value = true
                     })
@@ -111,11 +90,13 @@ fun Companies(navigationActions: LeanNavigationActions, navigate: (Int) -> Unit)
         navBackStackEntry?.destination?.route ?: COMPANIES_ROUTE
     Scaffold(
         scaffoldState = scaffoldState,
-        topBar = { LeanTopAppBar(onNavigationIcon = {
-            IconButton(onClick = { scope.launch { scaffoldState.drawerState.open() } }) {
-                Icon(Icons.Filled.Menu, contentDescription = null)
-            }
-        }) },
+        topBar = {
+            LeanTopAppBar(onNavigationIcon = {
+                IconButton(onClick = { scope.launch { scaffoldState.drawerState.open() } }) {
+                    Icon(Icons.Filled.Menu, contentDescription = null)
+                }
+            })
+        },
         drawerContent = {
             LeanDrawer(currentRoute, onDrawerItemSelected = { item ->
                 when (item) {
@@ -128,7 +109,7 @@ fun Companies(navigationActions: LeanNavigationActions, navigate: (Int) -> Unit)
     ) {
         Column(modifier = Modifier.padding(vertical = 2.dp)) {
             Column(modifier = Modifier.padding(horizontal = 8.dp)) {
-                TextButton(onClick = { dismiss.value = false }) { Text(selectedOption.value) }
+                TextButton(onClick = { dismiss.value = false }) { Text(selectedOption) }
                 if (total.value != null) Text(
                     "总数 ${total.value}",
                     Modifier.padding(start = 8.dp, bottom = 4.dp, end = 8.dp, top = 2.dp),

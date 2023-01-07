@@ -10,12 +10,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import cn.net.ilean.cms.loginService
-import cn.net.ilean.cms.network.LoginRequest
-import cn.net.ilean.cms.network.LoginResponse
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 @Composable
 fun Login(onSuccess: () -> Unit) {
@@ -26,23 +20,23 @@ fun Login(onSuccess: () -> Unit) {
         TextField(value = phoneNumber.value, onValueChange = {})
         TextField(value = verificationCode.value, onValueChange = {})
         Button(onClick = {
-            loginService.login(
-                LoginRequest(
-                    phoneNumber.value,
-                    verificationCode = verificationCode.value
-                )
-            ).enqueue(object : Callback<LoginResponse> {
-                override fun onResponse(
-                    call: Call<LoginResponse>,
-                    response: Response<LoginResponse>
-                ) {
-                    if (response.body()?.code == "0") {
-                        onSuccess()
-                    }
-                }
-
-                override fun onFailure(call: Call<LoginResponse>, t: Throwable) {}
-            })
+//            loginService.login(
+//                LoginRequest(
+//                    phoneNumber.value,
+//                    verificationCode = verificationCode.value
+//                )
+//            ).enqueue(object : Callback<LoginResponse> {
+//                override fun onResponse(
+//                    call: Call<LoginResponse>,
+//                    response: Response<LoginResponse>
+//                ) {
+//                    if (response.body()?.code == "0") {
+//                        onSuccess()
+//                    }
+//                }
+//
+//                override fun onFailure(call: Call<LoginResponse>, t: Throwable) {}
+//            })
         }) { Text(text = "登录") }
     }
 }

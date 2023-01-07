@@ -46,8 +46,9 @@ fun Companies(
     )
     var selectedOption by remember { mutableStateOf("最新注册") }
 
-    val companyPage by mainViewModel.getCompanies(radioOptions[selectedOption]!!)
-        .collectAsState(initial = null)
+    val companyPage by remember {
+        mainViewModel.getCompanies(radioOptions[selectedOption]!!)
+    }.collectAsState(initial = null)
     println("<top>.Companies")
     val total = remember { mutableStateOf(companyPage?.total) }
     if (companyPage != null) {

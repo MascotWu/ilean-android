@@ -18,7 +18,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    val usersRepository: UsersRepository, val companiesRepository: CompaniesRepository
+    private val usersRepository: UsersRepository,
+    private val companiesRepository: CompaniesRepository
 ) : ViewModel() {
     fun users(orderBy: String): PagingSource<Int, User> = usersRepository.users(orderBy)
 

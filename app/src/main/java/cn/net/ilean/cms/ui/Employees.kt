@@ -80,7 +80,7 @@ fun Employees(navigationActions: LeanNavigationActions, mainViewModel: MainViewM
         val lazyPagingItems = pager.flow.collectAsLazyPagingItems()
         LazyColumn(modifier = Modifier.padding(top = 8.dp)) {
             stickyHeader {
-                Column {
+                Column(Modifier.background(MaterialTheme.colors.background)) {
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         modifier = Modifier

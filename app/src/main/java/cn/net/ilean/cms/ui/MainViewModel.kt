@@ -29,15 +29,13 @@ class MainViewModel @Inject constructor(
     )
 
     init {
-        viewModelScope.launch(Dispatchers.IO) {
-            viewModelState.emit(
-                MainViewModelState(isLoading = false, page = getCompanies("date_created"))
-            )
-        }
+        getCompanies("date_created")
     }
 
-    suspend fun getCompanies(orderBy: String): Page<Company>? {
-        return companiesRepository.getCompanies(orderBy)
+    fun getCompanies(orderBy: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            viewModelState.update { it.copy(page = companiesRepository.getCompanies(orderBy)) }
+        }
     }
 
     fun getCompany(companyId: Int): Flow<Company?> {

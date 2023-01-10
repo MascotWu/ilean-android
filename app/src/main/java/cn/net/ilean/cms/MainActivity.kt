@@ -14,7 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import cn.net.ilean.cms.ui.theme.MyApplicationTheme
+import cn.net.ilean.cms.ui.theme.LeanApplicationTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -22,7 +22,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MyApplicationTheme {
+            LeanApplicationTheme {
                 App()
             }
         }
@@ -47,7 +47,7 @@ fun Greeting() {
 @Composable
 fun DefaultPreview() {
     Log.e("DefaultPreview", "DefaultPreview: ")
-    MyApplicationTheme() {
+    LeanApplicationTheme() {
         Greeting()
     }
 }

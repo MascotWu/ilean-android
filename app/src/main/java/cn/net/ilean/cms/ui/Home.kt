@@ -6,30 +6,25 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import cn.net.ilean.cms.LeanDestination.COMPANIES_ROUTE
 import cn.net.ilean.cms.LeanDestination.EMPLOYEES_ROUTE
 import cn.net.ilean.cms.LeanNavigationActions
 import cn.net.ilean.cms.network.entity.Company
-import cn.net.ilean.cms.ui.theme.MyApplicationTheme
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
@@ -82,12 +77,19 @@ fun Companies(
                 Column(
                     Modifier
                         .fillMaxWidth()
-                        .background(MaterialTheme.colors.background)) {
-                    for (key in radioOptions.keys) {
-                        FilterChip(selected = key == selectedOption,
-                            onClick = { onOptionSelected(key) },
-                            label = { Text(key) })
+                        .background(MaterialTheme.colors.background)
+                ) {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
+                    ) {
+                        for (key in radioOptions.keys) {
+                            FilterChip(selected = key == selectedOption,
+                                onClick = { onOptionSelected(key) },
+                                label = { Text(key) })
+                        }
                     }
+
                     if (x.page != null) Text(
                         "总数 ${x.page.total}",
                         Modifier.padding(start = 8.dp, bottom = 4.dp, end = 8.dp, top = 2.dp),

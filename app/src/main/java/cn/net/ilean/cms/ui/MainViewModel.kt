@@ -10,9 +10,8 @@ import cn.net.ilean.cms.network.response.IssueHistory
 import cn.net.ilean.cms.network.response.Page
 import cn.net.ilean.cms.network.response.User
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -23,9 +22,22 @@ class MainViewModel @Inject constructor(
 ) : ViewModel() {
     fun users(orderBy: String): PagingSource<Int, User> = usersRepository.users(orderBy)
 
-    fun getCompanies(orderBy: String): Flow<Page<Company>?> {
+    private val viewModelState = MutableStateFlow(MainViewModelState(true))
+
+    val uiState = viewModelState.map { it.toUiState() }.stateIn(
+        viewModelScope, SharingStarted.Eagerly, MainUiState.Companies()
+    )
+
+    init {
+        viewModelScope.launch(Dispatchers.IO) {
+            viewModelState.emit(
+                MainViewModelState(isLoading = false, page = getCompanies("date_created"))
+            )
+        }
+    }
+
+    suspend fun getCompanies(orderBy: String): Page<Company>? {
         return companiesRepository.getCompanies(orderBy)
-            .stateIn(viewModelScope, SharingStarted.Eagerly, null)
     }
 
     fun getCompany(companyId: Int): Flow<Company?> {
@@ -35,5 +47,14 @@ class MainViewModel @Inject constructor(
 
     fun history(companyId: Int): Flow<List<IssueHistory>?> =
         companiesRepository.history(companyId).stateIn(viewModelScope, SharingStarted.Eagerly, null)
+}
 
+data class MainViewModelState(val isLoading: Boolean, val page: Page<Company>? = null) {
+    fun toUiState(): MainUiState.Companies = MainUiState.Companies(page)
+}
+
+class MainUiState {
+    data class Companies(
+        val page: Page<Company>? = null
+    )
 }

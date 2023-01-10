@@ -10,7 +10,7 @@ import javax.inject.Inject
 class CompaniesRepository @Inject constructor(
     val companiesRemoteDataSource: CompaniesRemoteDataSource
 ) {
-    fun getCompanies(orderBy: String): Flow<Page<Company>?> {
+    suspend fun getCompanies(orderBy: String): Page<Company>? {
         return companiesRemoteDataSource.getCompanies(orderBy)
     }
 

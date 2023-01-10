@@ -23,18 +23,14 @@ val userService = retrofit.create(UserService::class.java)
 class CompanyServiceImpl {
     private val companyService = retrofit.create(CompanyService::class.java)
 
-    fun getCompanies(orderBy: String): Flow<Page<Company>?> {
+    suspend fun getCompanies(orderBy: String): Page<Company>? {
         val today: Calendar = Calendar.getInstance(Locale.CHINA)
         today.add(Calendar.MONTH, -3)
-        return flow {
-            emit(
-                companyService.getCompanies(
-                    pageNum = 1, orderBy = orderBy, lastUsedTime = SimpleDateFormat(
-                        "yyyy-MM-dd", Locale.CHINA
-                    ).format(Date(today.timeInMillis))
-                ).execute().body()?.data
-            )
-        }.flowOn(Dispatchers.IO)
+        return  companyService.getCompanies(
+            pageNum = 1, orderBy = orderBy, lastUsedTime = SimpleDateFormat(
+                "yyyy-MM-dd", Locale.CHINA
+            ).format(Date(today.timeInMillis))
+        ).execute().body()?.data
     }
 
     fun getCompany(companyId: Int): Flow<Company?> = flow {

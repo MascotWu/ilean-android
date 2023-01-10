@@ -1,5 +1,6 @@
 package cn.net.ilean.cms.ui
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -9,6 +10,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,11 +29,13 @@ import cn.net.ilean.cms.LeanDestination.COMPANIES_ROUTE
 import cn.net.ilean.cms.LeanDestination.EMPLOYEES_ROUTE
 import cn.net.ilean.cms.LeanNavigationActions
 import cn.net.ilean.cms.network.entity.Company
+import cn.net.ilean.cms.ui.theme.MyApplicationTheme
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun Companies(
     navigationActions: LeanNavigationActions, mainViewModel: MainViewModel, navigate: (Int) -> Unit
@@ -48,31 +53,6 @@ fun Companies(
         selectedOption = key
         mainViewModel.getCompanies(radioOptions[key]!!)
     }
-    val dismiss = remember { mutableStateOf(true) }
-    if (!dismiss.value) Dialog(onDismissRequest = { dismiss.value = true }, content = {
-        Column(
-            modifier = Modifier
-                .clip(RoundedCornerShape(8.dp))
-                .background(Color.White)
-                .padding(8.dp)
-        ) {
-            radioOptions.keys.forEach { key ->
-                Row(verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable {
-                            onOptionSelected(key)
-                            dismiss.value = true
-                        }) {
-                    RadioButton(selected = key == selectedOption, onClick = {
-                        onOptionSelected(key)
-                        dismiss.value = true
-                    })
-                    Text(key, fontSize = 16.sp)
-                }
-            }
-        }
-    })
     val scaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope()
     val navController = rememberNavController()
@@ -97,96 +77,98 @@ fun Companies(
             })
         },
     ) {
-        Column(modifier = Modifier.padding(vertical = 2.dp)) {
-            Column(modifier = Modifier.padding(horizontal = 8.dp)) {
-                TextButton(onClick = { dismiss.value = false }) { Text(selectedOption) }
-                if (x.page != null) Text(
-                    "总数 ${x.page.total}",
-                    Modifier.padding(start = 8.dp, bottom = 4.dp, end = 8.dp, top = 2.dp),
-                    fontSize = 14.sp,
-                    style = TextStyle(color = Color.Gray),
-                )
+        LazyColumn {
+            stickyHeader {
+                Column(
+                    Modifier
+                        .fillMaxWidth()
+                        .background(MaterialTheme.colors.background)) {
+                    for (key in radioOptions.keys) {
+                        FilterChip(selected = key == selectedOption,
+                            onClick = { onOptionSelected(key) },
+                            label = { Text(key) })
+                    }
+                    if (x.page != null) Text(
+                        "总数 ${x.page.total}",
+                        Modifier.padding(start = 8.dp, bottom = 4.dp, end = 8.dp, top = 2.dp),
+                        fontSize = 14.sp,
+                        style = TextStyle(color = Color.Gray),
+                    )
+                }
             }
-
-            LazyColumn {
-                items(items = x.page?.list ?: emptyList(), itemContent = { company: Company ->
-                    Column(modifier = Modifier
-                        .clickable { navigate(company.companyId!!) }
-                        .padding(horizontal = 16.dp, vertical = 6.dp)) {
-                        Row(modifier = Modifier.fillMaxWidth()) {
+            items(items = x.page?.list ?: emptyList(), itemContent = { company: Company ->
+                Column(modifier = Modifier
+                    .clickable { navigate(company.companyId!!) }
+                    .padding(horizontal = 16.dp, vertical = 6.dp)) {
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        Text(
+                            company.name ?: "",
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis,
+                            fontSize = 18.sp,
+                        )
+                        Text(
+                            text = " #${company.companyId}",
+                            maxLines = 1,
+                            fontSize = 18.sp,
+                            style = TextStyle(color = Color.Gray)
+                        )
+                    }
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Start
+                    ) {
+                        Row(modifier = Modifier.padding(top = 4.dp, end = 12.dp)) {
                             Text(
-                                company.name ?: "",
-                                maxLines = 2,
-                                overflow = TextOverflow.Ellipsis,
-                                fontSize = 18.sp,
+                                "问题 ", style = TextStyle(color = Color.Gray), fontSize = 14.sp
                             )
                             Text(
-                                text = " #${company.companyId}",
-                                maxLines = 1,
-                                fontSize = 18.sp,
-                                style = TextStyle(color = Color.Gray)
-                            )
-                        }
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.Start
-                        ) {
-                            Row(modifier = Modifier.padding(top = 4.dp, end = 12.dp)) {
-                                Text(
-                                    "问题 ",
-                                    style = TextStyle(color = Color.Gray),
-                                    fontSize = 14.sp
-                                )
-                                Text(
-                                    "${company.countOfIssue}",
-                                    style = TextStyle(color = Color.Blue),
-                                    fontSize = 14.sp
-                                )
-                            }
-                            Row(modifier = Modifier.padding(top = 4.dp, end = 12.dp)) {
-                                Text(
-                                    "员工 ",
-                                    style = TextStyle(color = Color.Gray),
-                                    fontSize = 14.sp
-                                )
-                                Text(
-                                    "${company.countOfEmployees}",
-                                    style = TextStyle(color = Color.Blue),
-                                    fontSize = 14.sp
-                                )
-                            }
-                        }
-                        Column(modifier = Modifier.padding(top = 4.dp)) {
-                            Text(
-                                "注册于 " + company.dateCreated,
-                                style = TextStyle(color = Color.Gray),
+                                "${company.countOfIssue}",
+                                style = TextStyle(color = Color.Blue),
                                 fontSize = 14.sp
                             )
-                            if (company.lastUsedTime != null) {
-                                val lastUsedTime = SimpleDateFormat(
-                                    "yyyy-MM-dd", Locale.CHINA
-                                ).parse(company.lastUsedTime!!)
-                                val numberOfDaysInactive = TimeUnit.DAYS.convert(
-                                    Date().time - lastUsedTime!!.time, TimeUnit.MILLISECONDS
+                        }
+                        Row(modifier = Modifier.padding(top = 4.dp, end = 12.dp)) {
+                            Text(
+                                "员工 ", style = TextStyle(color = Color.Gray), fontSize = 14.sp
+                            )
+                            Text(
+                                "${company.countOfEmployees}",
+                                style = TextStyle(color = Color.Blue),
+                                fontSize = 14.sp
+                            )
+                        }
+                    }
+                    Column(modifier = Modifier.padding(top = 4.dp)) {
+                        Text(
+                            "注册于 " + company.dateCreated,
+                            style = TextStyle(color = Color.Gray),
+                            fontSize = 14.sp
+                        )
+                        if (company.lastUsedTime != null) {
+                            val lastUsedTime = SimpleDateFormat(
+                                "yyyy-MM-dd", Locale.CHINA
+                            ).parse(company.lastUsedTime!!)
+                            val numberOfDaysInactive = TimeUnit.DAYS.convert(
+                                Date().time - lastUsedTime!!.time, TimeUnit.MILLISECONDS
+                            )
+                            if (numberOfDaysInactive < 30) {
+                                Text(
+                                    "${numberOfDaysInactive}天前使用过",
+                                    style = TextStyle(color = Color.Gray),
+                                    fontSize = 14.sp
                                 )
-                                if (numberOfDaysInactive < 30) {
-                                    Text(
-                                        "${numberOfDaysInactive}天前使用过",
-                                        style = TextStyle(color = Color.Gray),
-                                        fontSize = 14.sp
-                                    )
-                                } else {
-                                    Text(
-                                        "超过${numberOfDaysInactive}天未使用", style = TextStyle(
-                                            color = Color.Red, fontWeight = FontWeight.W600
-                                        ), fontSize = 14.sp
-                                    )
-                                }
+                            } else {
+                                Text(
+                                    "超过${numberOfDaysInactive}天未使用", style = TextStyle(
+                                        color = Color.Red, fontWeight = FontWeight.W600
+                                    ), fontSize = 14.sp
+                                )
                             }
                         }
                     }
-                })
-            }
+                }
+            })
         }
     }
 }

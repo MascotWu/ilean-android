@@ -11,11 +11,8 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import cn.net.ilean.cms.LeanDestination.COMPANIES_ROUTE
 import cn.net.ilean.cms.LeanDestination.EMPLOYEES_ROUTE
 import cn.net.ilean.cms.LeanNavigationActions
@@ -86,37 +83,38 @@ fun CompaniesScreenContent(
                         color = MaterialTheme.colorScheme.primary,
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis,
-                        fontSize = 18.sp,
+                        style = MaterialTheme.typography.titleMedium,
                     )
                     Text(
                         text = " #${company.companyId}",
                         maxLines = 1,
-                        fontSize = 18.sp,
+                        style = MaterialTheme.typography.titleMedium,
                     )
                 }
                 Row(
                     modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start
                 ) {
                     Row(modifier = Modifier.padding(top = 4.dp, end = 12.dp)) {
-                        Text("问题 ")
+                        Text("问题 ", style = MaterialTheme.typography.bodyMedium)
                         Text(
                             "${company.countOfIssue}",
-                            style = TextStyle(color = MaterialTheme.colorScheme.secondary),
-                            fontSize = 14.sp
+                            color = MaterialTheme.colorScheme.secondary,
+                            style = MaterialTheme.typography.bodyMedium,
                         )
                     }
                     Row(modifier = Modifier.padding(top = 4.dp, end = 12.dp)) {
-                        Text("员工 ")
+                        Text("员工 ", style = MaterialTheme.typography.bodyMedium)
                         Text(
                             "${company.countOfEmployees}",
-                            style = TextStyle(color = MaterialTheme.colorScheme.secondary),
-                            fontSize = 14.sp
+                            color = MaterialTheme.colorScheme.secondary,
+                            style = MaterialTheme.typography.bodyMedium,
                         )
                     }
                 }
                 Column(modifier = Modifier.padding(top = 4.dp)) {
                     Text(
                         "注册于 " + company.dateCreated,
+                        style = MaterialTheme.typography.bodyMedium,
                     )
                     if (company.lastUsedTime != null) {
                         val lastUsedTime = SimpleDateFormat(
@@ -128,13 +126,13 @@ fun CompaniesScreenContent(
                         if (numberOfDaysInactive < 30) {
                             Text(
                                 "${numberOfDaysInactive}天前使用过",
+                                style = MaterialTheme.typography.bodyMedium,
                             )
                         } else {
                             Text(
                                 "超过${numberOfDaysInactive}天未使用",
                                 color = MaterialTheme.colorScheme.error,
-                                style = TextStyle(fontWeight = FontWeight.W600),
-                                fontSize = 14.sp
+                                style = MaterialTheme.typography.bodyMedium
                             )
                         }
                     }

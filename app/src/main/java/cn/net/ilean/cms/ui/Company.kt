@@ -24,8 +24,7 @@ import cn.net.ilean.cms.LeanNavigationActions
 fun Company(
     navigationActions: LeanNavigationActions,
     companyId: Int,
-    mainViewModel: MainViewModel,
-    navigate: () -> Unit
+    mainViewModel: MainViewModel
 ) {
     val company by mainViewModel.getCompany(companyId).collectAsState(initial = null)
     val history by mainViewModel.history(companyId).collectAsState(initial = null)

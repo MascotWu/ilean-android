@@ -46,10 +46,10 @@ fun App() {
         ) { backStackEntry ->
             val arguments = backStackEntry.arguments
             Company(
-                companyId = arguments?.getInt("companyId")!!,
                 navigationActions = navigationActions,
+                companyId = arguments?.getInt("companyId")!!,
                 mainViewModel = mainViewModel,
-            ) { navController.popBackStack() }
+            )
         }
     }
 }

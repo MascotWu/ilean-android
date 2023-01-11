@@ -79,20 +79,34 @@ fun Employees(
                             .padding(horizontal = 12.dp, vertical = 8.dp)
                     ) {
                         Row {
-                            Text("${item?.name}", color = MaterialTheme.colorScheme.primary)
+                            Text(
+                                "${item?.name}",
+                                color = MaterialTheme.colorScheme.primary,
+                                style = MaterialTheme.typography.titleMedium,
+                            )
                             if (!item?.phone.isNullOrBlank()) Text(
-                                "${item?.phone}"
+                                "${item?.phone}", style = MaterialTheme.typography.titleMedium,
                             )
                         }
 
                         Row {
-                            Text("记录问题 ${item?.countOfIssueCreated} ")
-                            Text("解决问题 ${item?.countOfIssueSolved}")
+                            Text(
+                                "记录问题 ${item?.countOfIssueCreated} ",
+                                style = MaterialTheme.typography.bodyMedium,
+                            )
+                            Text(
+                                "解决问题 ${item?.countOfIssueSolved}",
+                                style = MaterialTheme.typography.bodyMedium,
+                            )
                         }
 
-                        Text("上次登录 ${item?.lastLoginTime}")
+                        Text(
+                            "上次登录 ${item?.lastLoginTime}",
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
                         if (!item?.registerTime.isNullOrBlank()) Text(
-                            "注册时间 ${item?.registerTime}"
+                            "注册时间 ${item?.registerTime}",
+                            style = MaterialTheme.typography.bodyMedium,
                         )
                     }
                 }

@@ -28,6 +28,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import cn.net.ilean.cms.LeanDestination
 import cn.net.ilean.cms.LeanNavigationActions
+import cn.net.ilean.cms.ui.components.ChipFilter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -78,32 +79,17 @@ fun Employees(navigationActions: LeanNavigationActions, mainViewModel: MainViewM
     ) {
         println("<top>.Employees 切换之后，这里会重新执行")
         val lazyPagingItems = pager.flow.collectAsLazyPagingItems()
-        LazyColumn(modifier = Modifier.padding(top = 8.dp)) {
+        LazyColumn {
             stickyHeader {
-                Column(Modifier.background(MaterialTheme.colors.background)) {
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        modifier = Modifier
-                            .padding(horizontal = 12.dp, vertical = 2.dp)
-                            .horizontalScroll(rememberScrollState())
+                ChipFilter(radioOptions) {
+                    pager = Pager(
+                        PagingConfig(
+                            initialLoadSize = 20,
+                            pageSize = 20,
+                            enablePlaceholders = true,
+                        )
                     ) {
-                        radioOptions.entries.forEach { entry ->
-                            FilterChip(
-                                selected = option.key == entry.key,
-                                onClick = {
-                                    option = entry
-                                    pager = Pager(
-                                        PagingConfig(
-                                            initialLoadSize = 20,
-                                            pageSize = 20,
-                                            enablePlaceholders = true,
-                                        )
-                                    ) {
-                                        mainViewModel.users(option.value)
-                                    }
-                                },
-                                label = { Text(entry.key) })
-                        }
+                        mainViewModel.users(option.value)
                     }
                 }
             }
@@ -130,8 +116,9 @@ fun Employees(navigationActions: LeanNavigationActions, mainViewModel: MainViewM
                     Text("上次登录 ${item?.lastLoginTime}", fontSize = 18.sp)
                     Text("记录问题 ${item?.countOfIssueCreated}", fontSize = 18.sp)
                     Text("解决问题 ${item?.countOfIssueSolved}", fontSize = 18.sp)
-                    if (!item?.registerTime.isNullOrBlank())
-                        Text("注册时间 ${item?.registerTime ?: "(空)"}", fontSize = 18.sp)
+                    if (!item?.registerTime.isNullOrBlank()) Text(
+                        "注册时间 ${item?.registerTime ?: "(空)"}", fontSize = 18.sp
+                    )
                 }
             }
 

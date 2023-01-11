@@ -10,7 +10,6 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,6 +24,7 @@ import cn.net.ilean.cms.LeanDestination.COMPANIES_ROUTE
 import cn.net.ilean.cms.LeanDestination.EMPLOYEES_ROUTE
 import cn.net.ilean.cms.LeanNavigationActions
 import cn.net.ilean.cms.network.entity.Company
+import cn.net.ilean.cms.ui.components.ChipFilter
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
@@ -152,7 +152,6 @@ fun CompaniesScreenContent(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CompaniesScreenHeader(
     mainViewModel: MainViewModel, uiState: MainUiState.Companies
@@ -162,26 +161,12 @@ fun CompaniesScreenHeader(
         "问题数量" to "count_of_issue",
         "员工数量" to "count_of_employees",
     )
-    var selectedOption by remember { mutableStateOf("最新注册") }
-    val onOptionSelected: (String) -> Unit = { key ->
-        selectedOption = key
-        mainViewModel.getCompanies(radioOptions[key]!!)
-    }
     Column(
         Modifier
             .fillMaxWidth()
             .background(MaterialTheme.colors.background)
     ) {
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
-        ) {
-            for (key in radioOptions.keys) {
-                FilterChip(selected = key == selectedOption,
-                    onClick = { onOptionSelected(key) },
-                    label = { Text(key) })
-            }
-        }
+        ChipFilter(radioOptions) { mainViewModel.getCompanies(it) }
         if (uiState.page != null) Text(
             "总数 ${uiState.page.total}",
             Modifier.padding(start = 8.dp, bottom = 4.dp, end = 8.dp, top = 2.dp),

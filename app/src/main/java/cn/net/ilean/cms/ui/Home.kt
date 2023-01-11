@@ -6,9 +6,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,40 +29,40 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Companies(
     navigationActions: LeanNavigationActions,
     mainViewModel: MainViewModel,
     onSelectCompany: (Int) -> Unit
 ) {
-    val scaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope()
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route ?: COMPANIES_ROUTE
     val uiState by mainViewModel.uiState.collectAsState()
-
-    Scaffold(
-        scaffoldState = scaffoldState,
-        topBar = {
+    val drawerState = rememberDrawerState(DrawerValue.Closed)
+    ModalNavigationDrawer(drawerState = drawerState, drawerContent = {
+        AppDrawer(currentRoute, onDrawerItemSelected = { item ->
+            when (item) {
+                COMPANIES_ROUTE -> navigationActions.navigateToCompanies()
+                EMPLOYEES_ROUTE -> navigationActions.navigateToEmployees()
+            }
+            scope.launch { drawerState.close() }
+        })
+    }, content = {
+        Scaffold(topBar = {
             LeanTopAppBar(onNavigationIcon = {
-                IconButton(onClick = { scope.launch { scaffoldState.drawerState.open() } }) {
+                IconButton(onClick = { scope.launch { drawerState.open() } }) {
                     Icon(Icons.Filled.Menu, contentDescription = null)
                 }
             })
-        },
-        drawerContent = {
-            AppDrawer(currentRoute, onDrawerItemSelected = { item ->
-                when (item) {
-                    COMPANIES_ROUTE -> navigationActions.navigateToCompanies()
-                    EMPLOYEES_ROUTE -> navigationActions.navigateToEmployees()
-                }
-                scope.launch { scaffoldState.drawerState.close() }
-            })
-        },
-    ) {
-        CompaniesScreenContent(mainViewModel, uiState, onSelectCompany)
-    }
+        }, content = { paddingValues ->
+            CompaniesScreenContent(
+                mainViewModel, uiState, onSelectCompany, modifier = Modifier.padding(paddingValues)
+            )
+        })
+    })
 }
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -71,8 +71,9 @@ fun CompaniesScreenContent(
     mainViewModel: MainViewModel,
     uiState: MainUiState.Companies,
     onSelectCompany: (Int) -> Unit,
+    modifier: Modifier,
 ) {
-    LazyColumn {
+    LazyColumn(modifier) {
         stickyHeader {
             CompaniesScreenHeader(mainViewModel, uiState)
         }
@@ -91,7 +92,6 @@ fun CompaniesScreenContent(
                         text = " #${company.companyId}",
                         maxLines = 1,
                         fontSize = 18.sp,
-                        style = TextStyle(color = Color.Gray)
                     )
                 }
                 Row(
@@ -99,11 +99,11 @@ fun CompaniesScreenContent(
                 ) {
                     Row(modifier = Modifier.padding(top = 4.dp, end = 12.dp)) {
                         Text(
-                            "问题 ", style = TextStyle(color = Color.Gray), fontSize = 14.sp
+                            "问题 ", fontSize = 14.sp
                         )
                         Text(
                             "${company.countOfIssue}",
-                            style = TextStyle(color = Color.Blue),
+                            style = TextStyle(color = androidx.compose.material3.MaterialTheme.colorScheme.primary),
                             fontSize = 14.sp
                         )
                     }
@@ -158,7 +158,7 @@ fun CompaniesScreenHeader(
     Column(
         Modifier
             .fillMaxWidth()
-            .background(MaterialTheme.colors.background)
+            .background(MaterialTheme.colorScheme.background)
     ) {
         ChipFilter(
             mapOf(
@@ -170,7 +170,7 @@ fun CompaniesScreenHeader(
         if (uiState.page != null) Text(
             "总数 ${uiState.page.total}",
             Modifier.padding(start = 8.dp, bottom = 4.dp, end = 8.dp, top = 2.dp),
-            style = MaterialTheme.typography.subtitle2,
+            style = MaterialTheme.typography.titleSmall,
         )
     }
 }

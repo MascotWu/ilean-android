@@ -22,14 +22,18 @@ fun AppDrawer(currentRoute: String, onDrawerItemSelected: (item: String) -> Unit
     ModalDrawerSheet {
         Spacer(modifier = Modifier.height(12.dp))
         NavigationDrawerItem(
-            icon = { Icon(Icons.Filled.Home, null) },
+            icon = { Icon(Icons.Filled.Home, null, tint = MaterialTheme.colorScheme.primary) },
             label = { Text("Companies") },
             selected = currentRoute == LeanDestination.COMPANIES_ROUTE,
             onClick = { onDrawerItemSelected(LeanDestination.COMPANIES_ROUTE) },
             modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding),
         )
         NavigationDrawerItem(
-            icon = { Icon(Icons.Filled.AccountBox, null) },
+            icon = {
+                Icon(
+                    Icons.Filled.AccountBox, null
+                )
+            },
             label = { Text("Employees") },
             selected = currentRoute == LeanDestination.EMPLOYEES_ROUTE,
             onClick = { onDrawerItemSelected(LeanDestination.EMPLOYEES_ROUTE) },

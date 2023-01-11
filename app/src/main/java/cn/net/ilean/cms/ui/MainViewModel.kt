@@ -2,6 +2,7 @@ package cn.net.ilean.cms.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
 import androidx.paging.PagingSource
 import cn.net.ilean.cms.data.company.CompaniesRepository
 import cn.net.ilean.cms.data.employee.UsersRepository
@@ -20,7 +21,7 @@ class MainViewModel @Inject constructor(
     private val usersRepository: UsersRepository,
     private val companiesRepository: CompaniesRepository
 ) : ViewModel() {
-    fun users(orderBy: String): PagingSource<Int, User> = usersRepository.users(orderBy)
+    fun users(orderBy: String): Pager<Int, User> = usersRepository.users(orderBy)
 
     private val viewModelState = MutableStateFlow(MainViewModelState(true))
 

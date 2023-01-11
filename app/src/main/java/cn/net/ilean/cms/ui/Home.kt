@@ -156,17 +156,18 @@ fun CompaniesScreenContent(
 fun CompaniesScreenHeader(
     mainViewModel: MainViewModel, uiState: MainUiState.Companies
 ) {
-    val radioOptions = mapOf(
-        "最新注册" to "date_created",
-        "问题数量" to "count_of_issue",
-        "员工数量" to "count_of_employees",
-    )
     Column(
         Modifier
             .fillMaxWidth()
             .background(MaterialTheme.colors.background)
     ) {
-        ChipFilter(radioOptions) { mainViewModel.getCompanies(it) }
+        ChipFilter(
+            mapOf(
+                "最新注册" to "date_created",
+                "问题数量" to "count_of_issue",
+                "员工数量" to "count_of_employees",
+            )
+        ) { mainViewModel.getCompanies(it) }
         if (uiState.page != null) Text(
             "总数 ${uiState.page.total}",
             Modifier.padding(start = 8.dp, bottom = 4.dp, end = 8.dp, top = 2.dp),

@@ -26,7 +26,7 @@ class CompanyServiceImpl {
     suspend fun getCompanies(orderBy: String): Page<Company>? {
         val today: Calendar = Calendar.getInstance(Locale.CHINA)
         today.add(Calendar.MONTH, -3)
-        return  companyService.getCompanies(
+        return companyService.getCompanies(
             pageNum = 1, orderBy = orderBy, lastUsedTime = SimpleDateFormat(
                 "yyyy-MM-dd", Locale.CHINA
             ).format(Date(today.timeInMillis))
@@ -45,10 +45,7 @@ class CompanyServiceImpl {
 class UserServiceImpl {
     fun getUsers(page: Int, pageSize: Int, orderBy: String): Page<User>? {
         return userService.getEmployees(
-            page = page,
-            pageSize = pageSize,
-            orderBy = orderBy
-        )
-            .execute().body()?.data
+            page = page, pageSize = pageSize, orderBy = orderBy,
+        ).execute().body()?.data
     }
 }

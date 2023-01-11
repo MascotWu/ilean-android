@@ -1,5 +1,7 @@
 package cn.net.ilean.cms.data.employee
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import cn.net.ilean.cms.network.UserServiceImpl
@@ -12,7 +14,13 @@ import javax.inject.Singleton
 
 @Singleton
 class EmployeesRemoteDataSource @Inject constructor() {
-    fun users(orderBy: String) = UserPagingSource(orderBy)
+    fun users(orderBy: String) = Pager(
+        PagingConfig(
+            initialLoadSize = 10,
+            pageSize = 10,
+        ),
+        pagingSourceFactory = { UserPagingSource(orderBy) },
+    )
 }
 
 class UserPagingSource(private val orderBy: String) : PagingSource<Int, User>() {

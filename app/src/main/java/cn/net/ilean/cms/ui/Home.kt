@@ -17,8 +17,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
 import cn.net.ilean.cms.LeanDestination.COMPANIES_ROUTE
 import cn.net.ilean.cms.LeanDestination.EMPLOYEES_ROUTE
 import cn.net.ilean.cms.LeanNavigationActions
@@ -34,12 +32,10 @@ import java.util.concurrent.TimeUnit
 fun Companies(
     navigationActions: LeanNavigationActions,
     mainViewModel: MainViewModel,
+    currentRoute: String,
     onSelectCompany: (Int) -> Unit
 ) {
     val scope = rememberCoroutineScope()
-    val navController = rememberNavController()
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.destination?.route ?: COMPANIES_ROUTE
     val uiState by mainViewModel.uiState.collectAsState()
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     ModalNavigationDrawer(drawerState = drawerState, drawerContent = {

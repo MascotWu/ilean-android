@@ -22,6 +22,7 @@ class LeanApplication : Application()
 fun App() {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route ?: LeanDestination.COMPANIES_ROUTE
     val navigationActions = LeanNavigationActions(navController)
     val mainViewModel = hiltViewModel<MainViewModel>()
     NavHost(navController = navController, startDestination = COMPANIES_ROUTE) {
@@ -31,14 +32,15 @@ fun App() {
             }
         }
         composable(COMPANIES_ROUTE) {
-            Companies(navigationActions,mainViewModel) { companyId -> navController.navigate("company/$companyId")}
+            Companies(
+                navigationActions, mainViewModel, currentRoute
+            ) { companyId -> navController.navigate("company/$companyId") }
         }
         composable(EMPLOYEES_ROUTE) {
-            Employees(navigationActions, mainViewModel)
+            Employees(navigationActions, mainViewModel, currentRoute)
         }
         composable(
-            "company/{companyId}",
-            arguments = listOf(navArgument("companyId") {
+            "company/{companyId}", arguments = listOf(navArgument("companyId") {
                 type = NavType.IntType
             })
         ) { backStackEntry ->

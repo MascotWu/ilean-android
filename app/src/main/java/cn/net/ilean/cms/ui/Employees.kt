@@ -15,8 +15,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
@@ -28,11 +26,10 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun Employees(navigationActions: LeanNavigationActions, mainViewModel: MainViewModel) {
+fun Employees(
+    navigationActions: LeanNavigationActions, mainViewModel: MainViewModel, currentRoute: String
+) {
     val coroutineScope = rememberCoroutineScope()
-    val navController = rememberNavController()
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.destination?.route ?: LeanDestination.COMPANIES_ROUTE
     val radioOptions = mapOf(
         "最新登录" to "last_login_time",
         "记录问题" to "count_of_issue_created",

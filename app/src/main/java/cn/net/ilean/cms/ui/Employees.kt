@@ -15,7 +15,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.paging.LoadState
@@ -24,11 +23,13 @@ import androidx.paging.compose.items
 import cn.net.ilean.cms.LeanDestination
 import cn.net.ilean.cms.LeanNavigationActions
 import cn.net.ilean.cms.ui.components.ChipFilter
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun Employees(navigationActions: LeanNavigationActions, mainViewModel: MainViewModel) {
+    val coroutineScope = rememberCoroutineScope()
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route ?: LeanDestination.COMPANIES_ROUTE
@@ -47,12 +48,12 @@ fun Employees(navigationActions: LeanNavigationActions, mainViewModel: MainViewM
                 LeanDestination.COMPANIES_ROUTE -> navigationActions.navigateToCompanies()
                 LeanDestination.EMPLOYEES_ROUTE -> navigationActions.navigateToEmployees()
             }
-            mainViewModel.viewModelScope.launch { drawerState.close() }
+            coroutineScope.launch(Dispatchers.Default) { drawerState.close() }
         })
     }, content = {
         Scaffold(topBar = {
             LeanTopAppBar(onNavigationIcon = {
-                IconButton(onClick = { mainViewModel.viewModelScope.launch { drawerState.open() } }) {
+                IconButton(onClick = { coroutineScope.launch(Dispatchers.Default) { drawerState.open() } }) {
                     Icon(Icons.Filled.Menu, contentDescription = null)
                 }
             })

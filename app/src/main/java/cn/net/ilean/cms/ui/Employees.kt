@@ -48,7 +48,7 @@ fun Employees(navigationActions: LeanNavigationActions, mainViewModel: MainViewM
             })
         },
         drawerContent = {
-            LeanDrawer(currentRoute, onDrawerItemSelected = { item ->
+            AppDrawer(currentRoute, onDrawerItemSelected = { item ->
                 when (item) {
                     LeanDestination.COMPANIES_ROUTE -> navigationActions.navigateToCompanies()
                     LeanDestination.EMPLOYEES_ROUTE -> navigationActions.navigateToEmployees()

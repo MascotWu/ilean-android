@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.MyApplication" parent="android:Theme.Material.Light.NoActionBar">
-        <item name="android:statusBarColor">@color/purple_700</item>
+    <!-- Allows us to override platform level specific attributes in their
+      respective values-vXX folder. -->
+    <style name="Platform.Theme.Lean" parent="Theme.AppCompat.DayNight">
+        <item name="android:statusBarColor">@color/black</item>
     </style>
+
+    <!-- The actual theme we use. This varies for light theme (here),
+         and values-night for dark theme. -->
+    <style name="Theme.Lean" parent="Platform.Theme.Lean" />
 </resources>

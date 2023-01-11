@@ -4,7 +4,6 @@ import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Home
@@ -16,14 +15,16 @@ import androidx.compose.ui.unit.dp
 import cn.net.ilean.cms.LeanDestination
 import cn.net.ilean.cms.ui.theme.LeanApplicationTheme
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
 @Composable
 fun AppDrawer(currentRoute: String, onDrawerItemSelected: (item: String) -> Unit) {
     ModalDrawerSheet {
         Spacer(modifier = Modifier.height(12.dp))
         NavigationDrawerItem(
             icon = { Icon(Icons.Filled.Home, null, tint = MaterialTheme.colorScheme.primary) },
-            label = { Text("Companies") },
+            label = { Text("Companies")
+                FilterChipDefaults.filterChipColors()
+                    ButtonDefaults.buttonColors()},
             selected = currentRoute == LeanDestination.COMPANIES_ROUTE,
             onClick = { onDrawerItemSelected(LeanDestination.COMPANIES_ROUTE) },
             modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding),

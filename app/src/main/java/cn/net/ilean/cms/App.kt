@@ -51,20 +51,6 @@ fun App() {
                 mainViewModel = mainViewModel,
             ) { navController.popBackStack() }
         }
-        composable("profile/{userId}") {
-            Profile { navController.navigate("friends/jia/43") }
-        }
-        composable(
-            "friends/{name}/{id}", arguments = listOf(
-                navArgument("name") { type = NavType.StringType },
-                navArgument("id") { type = NavType.IntType },
-            )
-        ) { backStackEntry ->
-            val arguments = backStackEntry.arguments
-            val id = arguments?.getInt("id")
-            val name = arguments?.getString("name")
-            Friends(id, name)
-        }
     }
 }
 

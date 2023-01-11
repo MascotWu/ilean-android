@@ -1,6 +1,7 @@
 package cn.net.ilean.cms.ui
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -109,7 +110,7 @@ fun Employees(navigationActions: LeanNavigationActions, mainViewModel: MainViewM
 
 @Composable
 fun UsersScreenHeader(onOptionSelected: (String) -> Unit) {
-    Column {
+    Column(Modifier.background(MaterialTheme.colorScheme.background)) {
         ChipFilter(
             mapOf(
                 "最新登录" to "last_login_time",

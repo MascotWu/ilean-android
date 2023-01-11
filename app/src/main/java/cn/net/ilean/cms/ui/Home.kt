@@ -11,7 +11,6 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -84,6 +83,7 @@ fun CompaniesScreenContent(
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Text(
                         text = company.name ?: "",
+                        color = MaterialTheme.colorScheme.primary,
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis,
                         fontSize = 18.sp,
@@ -98,22 +98,18 @@ fun CompaniesScreenContent(
                     modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start
                 ) {
                     Row(modifier = Modifier.padding(top = 4.dp, end = 12.dp)) {
-                        Text(
-                            "问题 ", fontSize = 14.sp
-                        )
+                        Text("问题 ")
                         Text(
                             "${company.countOfIssue}",
-                            style = TextStyle(color = androidx.compose.material3.MaterialTheme.colorScheme.primary),
+                            style = TextStyle(color = MaterialTheme.colorScheme.secondary),
                             fontSize = 14.sp
                         )
                     }
                     Row(modifier = Modifier.padding(top = 4.dp, end = 12.dp)) {
-                        Text(
-                            "员工 ", style = TextStyle(color = Color.Gray), fontSize = 14.sp
-                        )
+                        Text("员工 ")
                         Text(
                             "${company.countOfEmployees}",
-                            style = TextStyle(color = Color.Blue),
+                            style = TextStyle(color = MaterialTheme.colorScheme.secondary),
                             fontSize = 14.sp
                         )
                     }
@@ -121,8 +117,6 @@ fun CompaniesScreenContent(
                 Column(modifier = Modifier.padding(top = 4.dp)) {
                     Text(
                         "注册于 " + company.dateCreated,
-                        style = TextStyle(color = Color.Gray),
-                        fontSize = 14.sp
                     )
                     if (company.lastUsedTime != null) {
                         val lastUsedTime = SimpleDateFormat(
@@ -134,14 +128,13 @@ fun CompaniesScreenContent(
                         if (numberOfDaysInactive < 30) {
                             Text(
                                 "${numberOfDaysInactive}天前使用过",
-                                style = TextStyle(color = Color.Gray),
-                                fontSize = 14.sp
                             )
                         } else {
                             Text(
-                                "超过${numberOfDaysInactive}天未使用", style = TextStyle(
-                                    color = Color.Red, fontWeight = FontWeight.W600
-                                ), fontSize = 14.sp
+                                "超过${numberOfDaysInactive}天未使用",
+                                color = MaterialTheme.colorScheme.error,
+                                style = TextStyle(fontWeight = FontWeight.W600),
+                                fontSize = 14.sp
                             )
                         }
                     }

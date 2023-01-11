@@ -30,29 +30,19 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun Companies(
-    navigationActions: LeanNavigationActions, mainViewModel: MainViewModel, navigate: (Int) -> Unit
+    navigationActions: LeanNavigationActions,
+    mainViewModel: MainViewModel,
+    onSelectCompany: (Int) -> Unit
 ) {
-    val radioOptions = mapOf(
-        "最新注册" to "date_created",
-        "问题数量" to "count_of_issue",
-        "员工数量" to "count_of_employees",
-    )
-    var selectedOption by remember { mutableStateOf("最新注册") }
-    val companyPage by mainViewModel.uiState.collectAsState()
-    val x = companyPage
-    println("<top>.Companies")
-    val onOptionSelected: (String) -> Unit = { key ->
-        selectedOption = key
-        mainViewModel.getCompanies(radioOptions[key]!!)
-    }
     val scaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope()
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route ?: COMPANIES_ROUTE
+    val uiState by mainViewModel.uiState.collectAsState()
+
     Scaffold(
         scaffoldState = scaffoldState,
         topBar = {
@@ -72,105 +62,130 @@ fun Companies(
             })
         },
     ) {
-        LazyColumn {
-            stickyHeader {
-                Column(
-                    Modifier
-                        .fillMaxWidth()
-                        .background(MaterialTheme.colors.background)
-                ) {
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
-                    ) {
-                        for (key in radioOptions.keys) {
-                            FilterChip(selected = key == selectedOption,
-                                onClick = { onOptionSelected(key) },
-                                label = { Text(key) })
-                        }
-                    }
+        CompaniesScreenContent(mainViewModel, uiState, onSelectCompany)
+    }
+}
 
-                    if (x.page != null) Text(
-                        "总数 ${x.page.total}",
-                        Modifier.padding(start = 8.dp, bottom = 4.dp, end = 8.dp, top = 2.dp),
-                        fontSize = 14.sp,
-                        style = TextStyle(color = Color.Gray),
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun CompaniesScreenContent(
+    mainViewModel: MainViewModel,
+    uiState: MainUiState.Companies,
+    onSelectCompany: (Int) -> Unit,
+) {
+    LazyColumn {
+        stickyHeader {
+            CompaniesScreenHeader(mainViewModel, uiState)
+        }
+        items(items = uiState.page?.list ?: emptyList(), itemContent = { company: Company ->
+            Column(modifier = Modifier
+                .clickable { onSelectCompany(company.companyId!!) }
+                .padding(horizontal = 16.dp, vertical = 6.dp)) {
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    Text(
+                        text = company.name ?: "",
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis,
+                        fontSize = 18.sp,
+                    )
+                    Text(
+                        text = " #${company.companyId}",
+                        maxLines = 1,
+                        fontSize = 18.sp,
+                        style = TextStyle(color = Color.Gray)
                     )
                 }
-            }
-            items(items = x.page?.list ?: emptyList(), itemContent = { company: Company ->
-                Column(modifier = Modifier
-                    .clickable { navigate(company.companyId!!) }
-                    .padding(horizontal = 16.dp, vertical = 6.dp)) {
-                    Row(modifier = Modifier.fillMaxWidth()) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start
+                ) {
+                    Row(modifier = Modifier.padding(top = 4.dp, end = 12.dp)) {
                         Text(
-                            company.name ?: "",
-                            maxLines = 2,
-                            overflow = TextOverflow.Ellipsis,
-                            fontSize = 18.sp,
+                            "问题 ", style = TextStyle(color = Color.Gray), fontSize = 14.sp
                         )
                         Text(
-                            text = " #${company.companyId}",
-                            maxLines = 1,
-                            fontSize = 18.sp,
-                            style = TextStyle(color = Color.Gray)
-                        )
-                    }
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Start
-                    ) {
-                        Row(modifier = Modifier.padding(top = 4.dp, end = 12.dp)) {
-                            Text(
-                                "问题 ", style = TextStyle(color = Color.Gray), fontSize = 14.sp
-                            )
-                            Text(
-                                "${company.countOfIssue}",
-                                style = TextStyle(color = Color.Blue),
-                                fontSize = 14.sp
-                            )
-                        }
-                        Row(modifier = Modifier.padding(top = 4.dp, end = 12.dp)) {
-                            Text(
-                                "员工 ", style = TextStyle(color = Color.Gray), fontSize = 14.sp
-                            )
-                            Text(
-                                "${company.countOfEmployees}",
-                                style = TextStyle(color = Color.Blue),
-                                fontSize = 14.sp
-                            )
-                        }
-                    }
-                    Column(modifier = Modifier.padding(top = 4.dp)) {
-                        Text(
-                            "注册于 " + company.dateCreated,
-                            style = TextStyle(color = Color.Gray),
+                            "${company.countOfIssue}",
+                            style = TextStyle(color = Color.Blue),
                             fontSize = 14.sp
                         )
-                        if (company.lastUsedTime != null) {
-                            val lastUsedTime = SimpleDateFormat(
-                                "yyyy-MM-dd", Locale.CHINA
-                            ).parse(company.lastUsedTime!!)
-                            val numberOfDaysInactive = TimeUnit.DAYS.convert(
-                                Date().time - lastUsedTime!!.time, TimeUnit.MILLISECONDS
+                    }
+                    Row(modifier = Modifier.padding(top = 4.dp, end = 12.dp)) {
+                        Text(
+                            "员工 ", style = TextStyle(color = Color.Gray), fontSize = 14.sp
+                        )
+                        Text(
+                            "${company.countOfEmployees}",
+                            style = TextStyle(color = Color.Blue),
+                            fontSize = 14.sp
+                        )
+                    }
+                }
+                Column(modifier = Modifier.padding(top = 4.dp)) {
+                    Text(
+                        "注册于 " + company.dateCreated,
+                        style = TextStyle(color = Color.Gray),
+                        fontSize = 14.sp
+                    )
+                    if (company.lastUsedTime != null) {
+                        val lastUsedTime = SimpleDateFormat(
+                            "yyyy-MM-dd", Locale.CHINA
+                        ).parse(company.lastUsedTime!!)
+                        val numberOfDaysInactive = TimeUnit.DAYS.convert(
+                            Date().time - lastUsedTime!!.time, TimeUnit.MILLISECONDS
+                        )
+                        if (numberOfDaysInactive < 30) {
+                            Text(
+                                "${numberOfDaysInactive}天前使用过",
+                                style = TextStyle(color = Color.Gray),
+                                fontSize = 14.sp
                             )
-                            if (numberOfDaysInactive < 30) {
-                                Text(
-                                    "${numberOfDaysInactive}天前使用过",
-                                    style = TextStyle(color = Color.Gray),
-                                    fontSize = 14.sp
-                                )
-                            } else {
-                                Text(
-                                    "超过${numberOfDaysInactive}天未使用", style = TextStyle(
-                                        color = Color.Red, fontWeight = FontWeight.W600
-                                    ), fontSize = 14.sp
-                                )
-                            }
+                        } else {
+                            Text(
+                                "超过${numberOfDaysInactive}天未使用", style = TextStyle(
+                                    color = Color.Red, fontWeight = FontWeight.W600
+                                ), fontSize = 14.sp
+                            )
                         }
                     }
                 }
-            })
+            }
+        })
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CompaniesScreenHeader(
+    mainViewModel: MainViewModel, uiState: MainUiState.Companies
+) {
+    val radioOptions = mapOf(
+        "最新注册" to "date_created",
+        "问题数量" to "count_of_issue",
+        "员工数量" to "count_of_employees",
+    )
+    var selectedOption by remember { mutableStateOf("最新注册") }
+    val onOptionSelected: (String) -> Unit = { key ->
+        selectedOption = key
+        mainViewModel.getCompanies(radioOptions[key]!!)
+    }
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colors.background)
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
+        ) {
+            for (key in radioOptions.keys) {
+                FilterChip(selected = key == selectedOption,
+                    onClick = { onOptionSelected(key) },
+                    label = { Text(key) })
+            }
         }
+        if (uiState.page != null) Text(
+            "总数 ${uiState.page.total}",
+            Modifier.padding(start = 8.dp, bottom = 4.dp, end = 8.dp, top = 2.dp),
+            style = MaterialTheme.typography.subtitle2,
+        )
     }
 }

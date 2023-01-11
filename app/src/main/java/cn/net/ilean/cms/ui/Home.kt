@@ -54,7 +54,11 @@ fun Companies(
         Scaffold(topBar = {
             LeanTopAppBar(onNavigationIcon = {
                 IconButton(onClick = { scope.launch { drawerState.open() } }) {
-                    Icon(Icons.Filled.Menu, contentDescription = null)
+                    Icon(
+                        Icons.Filled.Menu,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                    )
                 }
             })
         }, content = { paddingValues ->

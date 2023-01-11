@@ -2,10 +2,7 @@ package cn.net.ilean.cms.ui
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
@@ -14,7 +11,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
@@ -49,9 +45,13 @@ fun Employees(
         })
     }, content = {
         Scaffold(topBar = {
-            LeanTopAppBar(onNavigationIcon = {
+            LeanTopAppBar(title = "用户列表", onNavigationIcon = {
                 IconButton(onClick = { coroutineScope.launch(Dispatchers.Default) { drawerState.open() } }) {
-                    Icon(Icons.Filled.Menu, contentDescription = null)
+                    Icon(
+                        Icons.Filled.Menu,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary
+                    )
                 }
             })
         }, content = { paddingValues ->
@@ -78,15 +78,21 @@ fun Employees(
                             .fillMaxWidth()
                             .padding(horizontal = 12.dp, vertical = 8.dp)
                     ) {
-                        Text("${item?.name}", fontSize = 20.sp)
-                        if (!item?.phone.isNullOrBlank()) Text(
-                            "${item?.phone}", fontSize = 18.sp
-                        )
-                        Text("上次登录 ${item?.lastLoginTime}", fontSize = 18.sp)
-                        Text("记录问题 ${item?.countOfIssueCreated}", fontSize = 18.sp)
-                        Text("解决问题 ${item?.countOfIssueSolved}", fontSize = 18.sp)
+                        Row {
+                            Text("${item?.name}", color = MaterialTheme.colorScheme.primary)
+                            if (!item?.phone.isNullOrBlank()) Text(
+                                "${item?.phone}"
+                            )
+                        }
+
+                        Row {
+                            Text("记录问题 ${item?.countOfIssueCreated} ")
+                            Text("解决问题 ${item?.countOfIssueSolved}")
+                        }
+
+                        Text("上次登录 ${item?.lastLoginTime}")
                         if (!item?.registerTime.isNullOrBlank()) Text(
-                            "注册时间 ${item?.registerTime ?: "(空)"}", fontSize = 18.sp
+                            "注册时间 ${item?.registerTime}"
                         )
                     }
                 }

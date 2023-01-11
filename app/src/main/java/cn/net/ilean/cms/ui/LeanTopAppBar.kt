@@ -8,10 +8,10 @@ import androidx.compose.runtime.Composable
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LeanTopAppBar(onNavigationIcon: @Composable () -> Unit) {
+fun LeanTopAppBar(title: String, onNavigationIcon: @Composable () -> Unit) {
     TopAppBar(
         title = {
-            Text("iLean", color = MaterialTheme.colorScheme.primary)
+            Text(title, color = MaterialTheme.colorScheme.primary)
         },
         navigationIcon = onNavigationIcon,
     )

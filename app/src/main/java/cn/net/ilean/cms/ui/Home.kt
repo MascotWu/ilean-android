@@ -47,7 +47,7 @@ fun Companies(
         })
     }, content = {
         Scaffold(topBar = {
-            LeanTopAppBar(onNavigationIcon = {
+            LeanTopAppBar(title = "企业列表", onNavigationIcon = {
                 IconButton(onClick = { scope.launch { drawerState.open() } }) {
                     Icon(
                         Icons.Filled.Menu,

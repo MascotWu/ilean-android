@@ -31,9 +31,13 @@ fun Company(
     val history by mainViewModel.history(companyId).collectAsState(initial = null)
 
     Scaffold(topBar = {
-        LeanTopAppBar(onNavigationIcon = {
+        LeanTopAppBar(title = "企业详情", onNavigationIcon = {
             IconButton(onClick = { navigationActions.navigateToCompanies() }) {
-                Icon(Icons.Filled.ArrowBack, contentDescription = null)
+                Icon(
+                    Icons.Filled.ArrowBack,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary
+                )
             }
         })
     }, content = { paddingValues ->

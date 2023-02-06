@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">爱精益</string>
+    <string name="app_name">iLean</string>
+    <string name="companies">Companies</string>
+    <string name="users">Users</string>
 </resources>
